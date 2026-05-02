@@ -15,80 +15,166 @@ app = Flask(__name__, static_folder="static", static_url_path="/static")
 app.secret_key = os.getenv("SECRET_KEY", "aura-ultra-2025")
 CORS(app, supports_credentials=True)
 
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 if os.getenv("VERCEL"):
     DB_PATH = "/tmp/aura.db"
 else:
     DB_PATH = os.path.join(os.path.dirname(__file__), "aura.db")
 
+class DBWrapper:
+    def __init__(self, conn):
+        self.conn = conn
+    def execute(self, query, params=None):
+        import psycopg2.extras
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        # Convert SQLite ? to Postgres %s
+        query = query.replace('?', '%s')
+        if params:
+            cur.execute(query, params)
+        else:
+            cur.execute(query)
+        return cur
+    def executescript(self, query):
+        cur = self.conn.cursor()
+        cur.execute(query)
+        return cur
+
 from contextlib import contextmanager
 
 @contextmanager
 def get_db():
-    conn = sqlite3.connect(DB_PATH, timeout=15.0)
-    conn.row_factory = sqlite3.Row
-    try:
-        with conn:
-            yield conn
-    finally:
-        conn.close()
+    if DATABASE_URL:
+        import psycopg2
+        conn = psycopg2.connect(DATABASE_URL)
+        conn.autocommit = True
+        try:
+            yield DBWrapper(conn)
+        finally:
+            conn.close()
+    else:
+        conn = sqlite3.connect(DB_PATH, timeout=15.0)
+        conn.row_factory = sqlite3.Row
+        try:
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
 def init_db():
     with get_db() as conn:
-        conn.executescript("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            coins INTEGER DEFAULT 0,
-            plan TEXT DEFAULT 'free',
-            plan_expires_at INTEGER DEFAULT 0,
-            streak INTEGER DEFAULT 0,
-            last_login_date TEXT DEFAULT '',
-            created_at INTEGER DEFAULT 0,
-            images_today INTEGER DEFAULT 0,
-            slides_today INTEGER DEFAULT 0,
-            last_action_date TEXT DEFAULT ''
-        );
-        CREATE TABLE IF NOT EXISTS tasks (
-            key TEXT PRIMARY KEY,
-            title TEXT NOT NULL,
-            description TEXT NOT NULL,
-            coins_reward INTEGER NOT NULL,
-            icon TEXT DEFAULT 'star',
-            repeatable INTEGER DEFAULT 0
-        );
-        CREATE TABLE IF NOT EXISTS user_tasks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            task_key TEXT NOT NULL,
-            completed_at INTEGER NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS coin_transactions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            amount INTEGER NOT NULL,
-            type TEXT NOT NULL,
-            description TEXT,
-            created_at INTEGER DEFAULT 0
-        );
-        CREATE TABLE IF NOT EXISTS chat_messages (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            role TEXT NOT NULL,
-            content TEXT NOT NULL,
-            created_at INTEGER DEFAULT 0
-        );
-        """)
-        tasks = [
-            ("daily_login",    "Kunlik kirish",             "Har kuni platformaga kiring",                    5,  "calendar", 1),
-            ("first_chat",     "Birinchi suhbat",           "AI bilan birinchi marta yozishing",             10, "message",  0),
-            ("first_image",    "Birinchi rasm",             "Imagine AI da birinchi rasmni yarating",        10, "image",    0),
-            ("first_slide",    "Birinchi prezentatsiya",    "Slides AI da ilk slaydni yarating",             10, "layout",   0),
-            ("share_app",      "Do'stlarga ulashish",       "Aura AI ni do'stlarga ulashing",                20, "share",    0),
-        ]
-        for t in tasks:
-            conn.execute("INSERT OR IGNORE INTO tasks (key,title,description,coins_reward,icon,repeatable) VALUES (?,?,?,?,?,?)", t)
+        if DATABASE_URL:
+            conn.executescript("""
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                coins INTEGER DEFAULT 0,
+                plan TEXT DEFAULT 'free',
+                plan_expires_at INTEGER DEFAULT 0,
+                streak INTEGER DEFAULT 0,
+                last_login_date TEXT DEFAULT '',
+                created_at INTEGER DEFAULT 0,
+                images_today INTEGER DEFAULT 0,
+                slides_today INTEGER DEFAULT 0,
+                last_action_date TEXT DEFAULT ''
+            );
+            CREATE TABLE IF NOT EXISTS tasks (
+                key TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                description TEXT NOT NULL,
+                coins_reward INTEGER NOT NULL,
+                icon TEXT DEFAULT 'star',
+                repeatable INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS user_tasks (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                task_key TEXT NOT NULL,
+                completed_at INTEGER NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS coin_transactions (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                amount INTEGER NOT NULL,
+                type TEXT NOT NULL,
+                description TEXT,
+                created_at INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS chat_messages (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                role TEXT NOT NULL,
+                content TEXT NOT NULL,
+                created_at INTEGER DEFAULT 0
+            );
+            """)
+            tasks = [
+                ("daily_login",    "Kunlik kirish",             "Har kuni platformaga kiring",                    5,  "calendar", 1),
+                ("first_chat",     "Birinchi suhbat",           "AI bilan birinchi marta yozishing",             10, "message",  0),
+                ("first_image",    "Birinchi rasm",             "Imagine AI da birinchi rasmni yarating",        10, "image",    0),
+                ("first_slide",    "Birinchi prezentatsiya",    "Slides AI da ilk slaydni yarating",             10, "layout",   0),
+                ("share_app",      "Do'stlarga ulashish",       "Aura AI ni do'stlarga ulashing",                20, "share",    0),
+            ]
+            for t in tasks:
+                conn.execute("INSERT INTO tasks (key,title,description,coins_reward,icon,repeatable) VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT (key) DO NOTHING", t)
+        else:
+            conn.executescript("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                coins INTEGER DEFAULT 0,
+                plan TEXT DEFAULT 'free',
+                plan_expires_at INTEGER DEFAULT 0,
+                streak INTEGER DEFAULT 0,
+                last_login_date TEXT DEFAULT '',
+                created_at INTEGER DEFAULT 0,
+                images_today INTEGER DEFAULT 0,
+                slides_today INTEGER DEFAULT 0,
+                last_action_date TEXT DEFAULT ''
+            );
+            CREATE TABLE IF NOT EXISTS tasks (
+                key TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                description TEXT NOT NULL,
+                coins_reward INTEGER NOT NULL,
+                icon TEXT DEFAULT 'star',
+                repeatable INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS user_tasks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                task_key TEXT NOT NULL,
+                completed_at INTEGER NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS coin_transactions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                amount INTEGER NOT NULL,
+                type TEXT NOT NULL,
+                description TEXT,
+                created_at INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS chat_messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                role TEXT NOT NULL,
+                content TEXT NOT NULL,
+                created_at INTEGER DEFAULT 0
+            );
+            """)
+            tasks = [
+                ("daily_login",    "Kunlik kirish",             "Har kuni platformaga kiring",                    5,  "calendar", 1),
+                ("first_chat",     "Birinchi suhbat",           "AI bilan birinchi marta yozishing",             10, "message",  0),
+                ("first_image",    "Birinchi rasm",             "Imagine AI da birinchi rasmni yarating",        10, "image",    0),
+                ("first_slide",    "Birinchi prezentatsiya",    "Slides AI da ilk slaydni yarating",             10, "layout",   0),
+                ("share_app",      "Do'stlarga ulashish",       "Aura AI ni do'stlarga ulashing",                20, "share",    0),
+            ]
+            for t in tasks:
+                conn.execute("INSERT OR IGNORE INTO tasks (key,title,description,coins_reward,icon,repeatable) VALUES (?,?,?,?,?,?)", t)
 
 init_db()
 
