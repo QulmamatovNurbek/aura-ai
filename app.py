@@ -475,29 +475,29 @@ def api_slides():
             messages=[{"role": "system", "content": sys_msg},
                       {"role": "user", "content": user_msg}],
             temperature=0.1,
-            max_tokens=4000
+            max_tokens=2048
         )
         raw = res.choices[0].message.content
         parsed = try_parse(raw)
     except Exception as e1:
         last_err = str(e1)
-        # Fallback: llama-3.3-70b-versatile (If available)
+        # Fallback: llama-3.1-8b-instant with simpler prompt
         try:
             simple_msg = (
                 f'Make {count} slides in {lang_label} about: {prompt}\n'
                 f'JSON only: [{{"type":"title","title":"T","subtitle":"S"}},{{"type":"content","title":"T","points":["P1","P2","P3"]}}]'
             )
             res2 = groq_client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="llama-3.1-8b-instant",
                 messages=[{"role": "system", "content": sys_msg},
                           {"role": "user", "content": simple_msg}],
                 temperature=0.1,
-                max_tokens=3000
+                max_tokens=2048
             )
             raw2 = res2.choices[0].message.content
             parsed = try_parse(raw2)
         except Exception as e2:
-            return jsonify({"error": f"Slayd yaratib bo'lmadi. Boshqacha mavzu bilan urinib ko'ring. ({str(e2)[:80]})"}), 500
+            return jsonify({"error": f"Slayd yaratib bo'lmadi. Boshqacha mavzu bilan urinib ko'ring. (Xato 1: {last_err[:40]}... Xato 2: {str(e2)[:40]})"}), 500
 
     if not parsed or not isinstance(parsed, list) or len(parsed) == 0:
         return jsonify({"error": "AI noto'g'ri javob qaytardi. Boshqacha mavzu bilan urinib ko'ring."}), 500
