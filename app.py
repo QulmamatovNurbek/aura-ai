@@ -15,7 +15,10 @@ app = Flask(__name__, static_folder="static", static_url_path="/static")
 app.secret_key = os.getenv("SECRET_KEY", "aura-ultra-2025")
 CORS(app, supports_credentials=True)
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "aura.db")
+if os.getenv("VERCEL"):
+    DB_PATH = "/tmp/aura.db"
+else:
+    DB_PATH = os.path.join(os.path.dirname(__file__), "aura.db")
 
 from contextlib import contextmanager
 
