@@ -272,9 +272,11 @@ def check_task(user_id, task_key):
         
         if task["repeatable"]:
             today = datetime.now().strftime("%Y-%m-%d")
-            ex = conn.execute("SELECT * FROM user_tasks WHERE user_id=? AND task_key=? AND date(datetime(completed_at,'unixepoch'))=?",
-                              (user_id, task_key, today)).fetchone()
-            if ex: return 0
+            # Database agnostic date check
+            ex_tasks = conn.execute("SELECT completed_at FROM user_tasks WHERE user_id=? AND task_key=?", (user_id, task_key)).fetchall()
+            for row in ex_tasks:
+                if datetime.fromtimestamp(row["completed_at"]).strftime("%Y-%m-%d") == today:
+                    return 0
         else:
             ex = conn.execute("SELECT * FROM user_tasks WHERE user_id=? AND task_key=?", (user_id, task_key)).fetchone()
             if ex: return 0
@@ -320,8 +322,11 @@ def api_register():
             user = conn.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
             session["user_id"] = user["id"]
         return jsonify({"message": "Muvaffaqiyatli ro'yxatdan o'tdingiz!"})
-    except sqlite3.IntegrityError:
-        return jsonify({"error": "Bu email allaqachon ro'yxatdan o'tgan"}), 409
+    except Exception as e:
+        err_str = str(e).lower()
+        if "unique" in err_str or "integrity" in err_str or "duplicate" in err_str:
+            return jsonify({"error": "Bu email allaqachon ro'yxatdan o'tgan"}), 409
+        raise e
 
 @app.route("/api/auth/login", methods=["POST"])
 def api_login():
