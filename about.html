@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>NovaMind AI — Haqida</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css">
+  
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-trail" id="cursorTrail"></div>
+  <canvas id="particles" class="particles-canvas"></canvas>
+  <div class="aurora">
+    <div class="aurora-1"></div>
+    <div class="aurora-2"></div>
+    <div class="aurora-3"></div>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-hex">
+        <svg viewBox="0 0 40 40" width="36" height="36">
+          <polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="20,8 31,14.5 31,25.5 20,32 9,25.5 9,14.5" fill="currentColor" opacity="0.15"/>
+          <text x="20" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="currentColor">N</text>
+        </svg>
+      </div>
+      <span>Nova<span class="logo-accent">Mind</span></span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="nav-link "><span>Home</span></a></li>
+      <li><a href="ai.html" class="nav-link nav-ai "><span>✦ AI Chat</span></a></li>
+      <li><a href="imagine.html" class="nav-link "><span>🎨 Imagine</span></a></li>
+      <li><a href="slides.html" class="nav-link "><span>🗂️ Slides</span></a></li>
+      <li><a href="plans.html" class="nav-link "><span>💎 Planlar</span></a></li>
+      <li><a href="about.html" class="nav-link active"><span>About</span></a></li>
+      <li><a href="contact.html" class="nav-link "><span>Contact</span></a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" title="Tema almashtirish">
+        <span class="theme-icon">🌙</span>
+      </button>
+
+      
+      <a href="login.html" class="nav-login-btn">Kirish</a>
+      <a href="register.html" class="nav-register-btn">Ro'yxat ✦</a>
+      
+
+      <button class="burger" id="burger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    
+
+<section class="page-hero">
+  <div class="page-eyebrow">About</div>
+  <h1>NovaMind AI <span class="glow-text">haqida</span></h1>
+  <p>Groq superkompyuteri yordamida ishlaydi. Tezlik — bizning ustunligimiz.</p>
+</section>
+
+<section class="about-section">
+  <div class="about-grid">
+    <div class="about-card span2">
+      <div class="acard-top"></div>
+      <h3>Loyiha nima?</h3>
+      <p>NovaMind AI — Groq API va eng zamonaviy LLM modellari asosida qurilgan, O'zbekiston foydalanuvchilari uchun maxsus mo'ljallangan sun'iy intellekt veb-ilovasi. Flask framework'ida yozilgan, multi-model arxitekturaga ega.</p>
+      <p>Loyiha maqsadi: har bir o'zbek foydalanuvchisi o'z ona tilida yuqori sifatli AI yordamiga ega bo'lishi.</p>
+    </div>
+    <div class="about-card">
+      <div class="acard-top accent-2"></div>
+      <h3>Texnologiyalar</h3>
+      <div class="tech-chips">
+        <span>Python 3.11</span><span>Flask 3.0</span><span>Groq API</span>
+        <span>LLaMA 3.3</span><span>Mixtral</span><span>Gemma 2</span>
+        <span>HTML5</span><span>CSS3</span><span>JavaScript</span>
+      </div>
+    </div>
+    <div class="about-card">
+      <div class="acard-top accent-3"></div>
+      <h3>Afzalliklar</h3>
+      <ul class="check-list">
+        <li>✦ 4 ta AI model tanlash</li>
+        <li>✦ O'zbek / Rus / Ingliz tili</li>
+        <li>✦ Groq: 800+ token/soniya</li>
+        <li>✦ Suhbat eksporti</li>
+        <li>✦ Bepul foydalanish</li>
+        <li>✦ Ro'yxatdan o'tish shart emas</li>
+      </ul>
+    </div>
+    <div class="about-card span2">
+      <div class="acard-top accent-4"></div>
+      <h3>Qanday ishlaydi?</h3>
+      <div class="flow-steps">
+        <div class="flow-item"><span class="fnum">01</span><div><b>Savol</b><p>Foydalanuvchi savolini yozadi</p></div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item"><span class="fnum">02</span><div><b>Flask</b><p>Backend so'rovni qabul qiladi</p></div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item"><span class="fnum">03</span><div><b>Groq</b><p>Superkompyuter AI modeli ishga tushiradi</p></div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item"><span class="fnum">04</span><div><b>Javob</b><p>Tezkor va aniq natija qaytadi</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="logo-hex small">
+            <svg viewBox="0 0 40 40" width="28" height="28">
+              <polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="none" stroke="currentColor" stroke-width="2"/>
+              <text x="20" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="currentColor">N</text>
+            </svg>
+          </div>
+          <span>Nova<span class="logo-accent">Mind</span> AI</span>
+        </div>
+        <p>O'zbekiston uchun eng aqlli AI yordamchi</p>
+      </div>
+      <div class="footer-links-col">
+        <h4>Sahifalar</h4>
+        <a href="index.html">Home</a><a href="ai.html">AI Chat</a>
+        <a href="imagine.html">🎨 Imagine</a><a href="slides.html">🗂️ Slides</a>
+        <a href="plans.html">💎 Planlar</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Yaratuvchi</h4>
+        <a href="creator.html">Tolibov Muhammad</a>
+        <a href="https://t.me/tolibovmuhammad" target="_blank">Telegram</a>
+        <a href="https://github.com/tolibovmuhammad" target="_blank">GitHub</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Hisob</h4>
+        
+        <a href="login.html">Kirish</a>
+        <a href="register.html">Ro'yxatdan o'tish</a>
+        
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 NovaMind AI · Yaratuvchi: <a href="creator.html">Tolibov Muhammad</a> · Powered by Groq ⚡</p>
+      <div class="footer-status"><span class="pulse-dot"></span> Barcha tizimlar ishlayapti</div>
+    </div>
+  </footer>
+
+  <script src="static/js/main.js"></script>
+  <script>
+  function toggleUserMenu(){
+    const d = document.getElementById('navUserDropdown');
+    d.classList.toggle('open');
+  }
+  document.addEventListener('click', function(e){
+    const wrap = document.getElementById('navUserWrap');
+    if(wrap && !wrap.contains(e.target)){
+      const d = document.getElementById('navUserDropdown');
+      if(d) d.classList.remove('open');
+    }
+  });
+  </script>
+  
+</body>
+</html>

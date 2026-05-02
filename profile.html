@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aura AI — Profil</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #05050f;
+      --bg2: #0c0c1e;
+      --p1: #7c6dfa;
+      --p2: #00d4ff;
+      --p3: #ff6b9d;
+      --gold: #ffd700;
+      --glass: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e8e8f0;
+      --muted: #6b6b8a;
+      --sidebar: 260px
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      height: 100vh;
+      display: flex;
+      overflow: hidden
+    }
+
+    .sidebar {
+      width: var(--sidebar);
+      min-width: var(--sidebar);
+      height: 100vh;
+      background: rgba(8, 8, 20, 0.95);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      z-index: 50
+    }
+
+    .sidebar-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--p1), var(--p2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      display: block;
+      padding: .5rem;
+      margin-bottom: 1rem;
+      text-align: center
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      margin-bottom: auto
+    }
+
+    .nav-item {
+      padding: .75rem 1rem;
+      border-radius: 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .85rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      transition: .2s
+    }
+
+    .nav-item:hover {
+      background: var(--glass);
+      color: var(--text)
+    }
+
+    .nav-item.active {
+      background: rgba(124, 109, 250, 0.1);
+      color: var(--p1);
+      border: 1px solid rgba(124, 109, 250, 0.2)
+    }
+
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto
+    }
+
+    .title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, var(--p1), var(--p2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent
+    }
+
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 1.5rem
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--p1), var(--p2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      flex-shrink: 0
+    }
+
+    .name-box h2 {
+      font-size: 1.5rem;
+      margin-bottom: .25rem
+    }
+
+    .name-box p {
+      color: var(--muted);
+      font-size: .9rem
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem
+    }
+
+    .info-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      border-radius: 16px;
+      text-align: center
+    }
+
+    .info-val {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--p2);
+      margin-bottom: .25rem;
+      font-family: 'Space Grotesk', sans-serif
+    }
+
+    .info-lbl {
+      font-size: .8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px
+    }
+
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff4b4b, #ff2a2a);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: .3s
+    }
+
+    .btn:hover {
+      box-shadow: 0 10px 30px rgba(255, 75, 75, 0.3);
+      transform: translateY(-2px)
+    }
+
+    @media(max-width:768px) {
+      .sidebar {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="sidebar">
+    <a href="/" class="sidebar-logo">Aura AI</a>
+    <div class="nav-menu">
+      <a href="/ai.html" class="nav-item">💬 AI Chat</a>
+      <a href="/imagine.html" class="nav-item">🎨 Imagine (Rasm)</a>
+      <a href="/slides.html" class="nav-item">📊 Slides (Slaydlar)</a>
+      <a href="/tasks.html" class="nav-item">🪙 Coin Ishlash</a>
+      <a href="/plans.html" class="nav-item">💎 Tariflar</a>
+      <a href="/profile.html" class="nav-item active">👤 Profil</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="container">
+      <h1 class="title">Shaxsiy Profil</h1>
+      <div class="card">
+        <div class="profile-header">
+          <div class="avatar" id="pAvatar">U</div>
+          <div class="name-box">
+            <h2 id="pName">Yuklanmoqda...</h2>
+            <p id="pEmail">...</p>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-val" id="pCoins">0</div>
+            <div class="info-lbl">Coinlar 🪙</div>
+          </div>
+          <div class="info-card">
+            <div class="info-val" id="pPlan" style="text-transform:capitalize;color:var(--p1)">Free</div>
+            <div class="info-lbl">Tarif 💎</div>
+          </div>
+        </div>
+
+        <button class="btn" onclick="logout()">Chiqish (Log Out)</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    fetch('/api/auth/me', { credentials: 'include' }).then(r => r.json()).then(d => {
+      if (!d.logged_in) {
+        window.location.href = '/login.html';
+        return;
+      }
+      document.getElementById('pName').textContent = d.user.name;
+      document.getElementById('pEmail').textContent = d.user.email;
+      document.getElementById('pAvatar').textContent = d.user.name.charAt(0).toUpperCase();
+      document.getElementById('pCoins').textContent = d.user.coins;
+      document.getElementById('pPlan').textContent = d.user.plan;
+    });
+
+    async function logout() {
+      if (!confirm("Haqiqatan ham chiqmoqchimisiz?")) return;
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/login.html';
+    }
+  </script>
+</body>
+
+</html>

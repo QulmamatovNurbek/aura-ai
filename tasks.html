@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Vazifalar — Coin yig'ing | Aura AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#05050f;--p1:#7c6dfa;--p2:#00d4ff;--p3:#ff6b9d;--gold:#ffd700;--glass:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#6b6b8a;--red:#ff6b6b;--green:#4cd137}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(120px);opacity:.12;pointer-events:none;z-index:0}
+.orb1{width:500px;height:500px;background:var(--gold);top:-200px;right:-100px}
+.orb2{width:400px;height:400px;background:var(--p1);bottom:-150px;left:-100px}
+canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,var(--p1),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.nav-links{display:flex;gap:1.5rem;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.875rem;transition:.3s}
+.nav-links a:hover{color:var(--text)}
+.coins-display{display:flex;align-items:center;gap:.4rem;padding:.4rem .9rem;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-radius:50px;font-size:.9rem;color:var(--gold);font-weight:700;cursor:default;transition:.3s}
+
+main{position:relative;z-index:1;padding:7rem 2rem 4rem;max-width:900px;margin:0 auto}
+
+.page-hero{text-align:center;margin-bottom:3rem}
+.section-tag{display:inline-block;padding:.3rem .8rem;border-radius:50px;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);color:var(--gold);font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:1rem}
+.page-hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:800;margin-bottom:.75rem}
+.page-hero p{color:var(--muted);font-size:1rem;max-width:500px;margin:0 auto}
+
+.coin-card{background:linear-gradient(135deg,rgba(124,109,250,0.15),rgba(0,212,255,0.08));border:1px solid rgba(124,109,250,0.3);border-radius:24px;padding:2rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1rem}
+.coin-main{display:flex;align-items:center;gap:1rem}
+.coin-big{font-family:'Space Grotesk',sans-serif;font-size:3.5rem;font-weight:800;color:var(--gold);line-height:1}
+.coin-label{color:var(--muted);font-size:.85rem}
+.coin-label strong{display:block;font-size:1rem;color:var(--text)}
+.coin-actions{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn-sm{padding:.6rem 1.25rem;border-radius:50px;font-size:.85rem;font-weight:600;text-decoration:none;transition:.3s;display:inline-flex;align-items:center;gap:.35rem;cursor:pointer;border:none;font-family:'Inter',sans-serif}
+.btn-filled{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff}
+.btn-filled:hover{box-shadow:0 6px 20px rgba(124,109,250,0.4);transform:translateY(-2px)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+
+.quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.5rem}
+.quiz-header h2{font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700}
+.quiz-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+
+.quiz-item{background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:1.5rem;display:flex;flex-direction:column;transition:.3s}
+.quiz-item:hover{border-color:var(--p1);transform:translateY(-3px)}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;font-size:.75rem;font-weight:600}
+.quiz-diff.Oson{color:var(--green)}
+.quiz-diff.O\'rta{color:var(--gold)}
+.quiz-diff.Qiyin{color:var(--red)}
+.quiz-reward{color:var(--gold);background:rgba(255,215,0,0.1);padding:.2rem .6rem;border-radius:50px}
+.quiz-q{font-size:1.05rem;font-weight:600;margin-bottom:1.25rem;line-height:1.4}
+
+.quiz-options{display:flex;flex-direction:column;gap:.5rem}
+.quiz-opt{padding:.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:.9rem;cursor:pointer;transition:.2s;text-align:left;font-family:'Inter',sans-serif}
+.quiz-opt:hover{background:rgba(255,255,255,0.08)}
+.quiz-opt.correct{background:rgba(76,209,55,0.2);border-color:var(--green);color:var(--green)}
+.quiz-opt.wrong{background:rgba(255,107,107,0.2);border-color:var(--red);color:var(--red)}
+
+.toast{position:fixed;bottom:2rem;right:2rem;padding:1rem 1.5rem;background:#0e0e20;border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:.9rem;z-index:300;transform:translateY(100px);opacity:0;transition:.4s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-color:rgba(76,209,55,0.5);color:var(--green)}
+.toast.error{border-color:rgba(255,107,107,0.5);color:var(--red)}
+
+.login-req{text-align:center;padding:4rem 2rem;background:var(--glass);border:1px solid var(--border);border-radius:24px}
+.login-req h3{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;margin-bottom:.75rem}
+
+.info-alert{background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);padding:1rem;border-radius:12px;margin-bottom:2rem;font-size:.9rem;color:#ff8080;display:flex;align-items:center;gap:.75rem}
+
+@media(max-width:600px){.nav-links{display:none}.coin-card{flex-direction:column;text-align:center}.coin-actions{justify-content:center}}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<canvas id="c"></canvas>
+
+<nav>
+  <a href="/" class="logo">Aura AI</a>
+  <div class="nav-links">
+    <a href="/ai.html">AI Chat</a>
+    <a href="/imagine.html">Imagine</a>
+    <a href="/slides.html">Slides</a>
+    <a href="/plans.html">Tariflar</a>
+    <a href="/profile.html">Profil 👤</a>
+  </div>
+  <div class="coins-display">🪙 <span id="coinCount">...</span></div>
+</nav>
+
+<main>
+  <div class="page-hero">
+    <div class="section-tag">🪙 COIN TESTLAR</div>
+    <h1>AI bo'yicha bilimlarni<br/>sinang, coin yig'ing!</h1>
+    <p>To'g'ri javob uchun qiyinligiga qarab tangalar. Ehtiyot bo'ling: 3 ta ketma-ket xato javob bersangiz 5 ta tanga olib tashlanadi!</p>
+  </div>
+
+  <div id="mainContent">
+    <div style="text-align:center;color:var(--muted);padding:3rem">Yuklanmoqda...</div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const canvas=document.getElementById('c');const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const stars=Array.from({length:100},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2,o:Math.random()*.5}));
+(function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);stars.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${s.o})`;ctx.fill();s.o+=.003*(Math.random()>.5?1:-1);s.o=Math.max(.05,Math.min(.7,s.o));});requestAnimationFrame(draw);})();
+
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.innerHTML=msg;t.className='toast '+(type||'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function escapeHtml(unsafe) {
+  return unsafe
+       .replace(/&/g, "&amp;")
+       .replace(/</g, "&lt;")
+       .replace(/>/g, "&gt;")
+       .replace(/"/g, "&quot;")
+       .replace(/'/g, "&#039;");
+}
+
+function renderQuiz(data){
+  document.getElementById('coinCount').textContent=data.coins;
+
+  let html=`
+  <div class="coin-card">
+    <div class="coin-main">
+      <div class="coin-big">🪙${data.coins}</div>
+      <div class="coin-label"><strong>Sizning coinlaringiz</strong>Test yechib yig'ing</div>
+    </div>
+    <div class="coin-actions">
+      <a href="/plans.html" class="btn-sm btn-filled">🚀 Tariflar</a>
+      <a href="/ai.html" class="btn-sm btn-outline">💬 AI Chat</a>
+    </div>
+  </div>
+  
+  <div class="info-alert">
+    <span>⚠️</span> 3 ta ketma-ket noto'g'ri javob berish jazolanadi (-5 coin). Yaxshilab o'ylab toping!
+  </div>
+
+  <div class="quiz-header">
+    <h2>Yechilmagan testlar: ${data.questions.length} ta</h2>
+    <span style="color:var(--muted);font-size:0.85rem">Jami: ${data.total} ta</span>
+  </div>
+  <div class="quiz-list">`;
+
+  if(data.questions.length===0){
+    html+=`<div style="grid-column:1/-1;text-align:center;padding:3rem;background:var(--glass);border-radius:20px;color:var(--muted)">Hozircha barcha testlarni yechdingiz. Barakalla!</div>`;
+  }
+
+  data.questions.forEach(q=>{
+    let opts='';
+    q.options.forEach((opt, idx)=>{
+      opts+=`<button class="quiz-opt" onclick="answerQuiz(${q.id}, ${idx}, this, this.parentElement)">${escapeHtml(opt)}</button>`;
+    });
+
+    html+=`
+    <div class="quiz-item" id="q-${q.id}">
+      <div class="quiz-meta">
+        <span class="quiz-diff ${q.diff}">${q.diff}</span>
+        <span class="quiz-reward">+${q.coins} 🪙</span>
+      </div>
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-options">
+        ${opts}
+      </div>
+    </div>`;
+  });
+
+  html+='</div>';
+  document.getElementById('mainContent').innerHTML=html;
+}
+
+async function answerQuiz(q_id, ans_idx, btn, parent) {
+  const allBtns = parent.querySelectorAll('button');
+  allBtns.forEach(b=>b.disabled=true);
+
+  try {
+    const res = await fetch('/api/quiz/answer', {
+      method:'POST', 
+      headers:{'Content-Type':'application/json'}, 
+      body:JSON.stringify({question_id: q_id, answer_index: ans_idx}), 
+      credentials:'include'
+    });
+    const data = await res.json();
+    
+    if(data.correct) {
+      btn.classList.add('correct');
+      showToast(data.message, 'success');
+      setTimeout(()=> { document.getElementById(`q-${q_id}`).style.display='none'; loadData(); }, 1500);
+    } else {
+      btn.classList.add('wrong');
+      showToast(data.message, 'error');
+      setTimeout(()=> { allBtns.forEach(b=>b.disabled=false); btn.classList.remove('wrong'); loadData(); }, 2000);
+    }
+  } catch(e) {
+    showToast("Xatolik yuz berdi", "error");
+    allBtns.forEach(b=>b.disabled=false);
+  }
+}
+
+function renderLogin(){
+  document.getElementById('mainContent').innerHTML=`
+  <div class="login-req">
+    <h3>🔐 Kirish talab etiladi</h3>
+    <p>Testlarni yechish va Coin yig'ish uchun avval hisobingizga kiring</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem">
+      <a href="/login.html" class="btn-sm btn-filled">Kirish</a>
+      <a href="/register.html" class="btn-sm btn-outline">🎁 Ro'yxatdan o'ting</a>
+    </div>
+  </div>`;
+  document.getElementById('coinCount').textContent='0';
+}
+
+async function loadData(){
+  try{
+    const meRes=await fetch('/api/auth/me',{credentials:'include'});
+    const me=await meRes.json();
+    if(!me.logged_in){renderLogin();return;}
+    const res=await fetch('/api/quiz',{credentials:'include'});
+    const data=await res.json();
+    renderQuiz(data);
+  }catch(e){renderLogin();}
+}
+
+loadData();
+</script>
+</body>
+</html>

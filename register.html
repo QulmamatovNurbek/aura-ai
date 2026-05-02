@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ro'yxatdan o'tish — Aura AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#05050f;--p1:#7c6dfa;--p2:#00d4ff;--p3:#ff6b9d;--gold:#ffd700;--glass:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#6b6b8a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-y:auto;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);opacity:.2;pointer-events:none}
+.orb1{width:500px;height:500px;background:var(--p3);top:-200px;right:-200px}
+.orb2{width:400px;height:400px;background:var(--p1);bottom:-150px;left:-150px}
+canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.page{position:relative;z-index:1;width:100%;max-width:460px;padding:2rem 1rem}
+.logo{display:block;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:1.75rem;font-weight:800;background:linear-gradient(135deg,var(--p1),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;margin-bottom:.5rem}
+.logo-sub{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:2rem}
+.bonus-badge{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.5rem 1rem;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-radius:50px;font-size:.8rem;color:var(--gold);margin-bottom:1.5rem;text-align:center}
+.card{background:rgba(10,10,26,0.85);border:1px solid var(--border);border-radius:24px;padding:2.5rem;backdrop-filter:blur(20px)}
+.card h1{font-family:'Space Grotesk',sans-serif;font-size:1.75rem;font-weight:800;margin-bottom:.5rem}
+.card p{color:var(--muted);font-size:.9rem;margin-bottom:1.75rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-group{margin-bottom:1.1rem}
+label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:.45rem;text-transform:uppercase;letter-spacing:.04em}
+input{width:100%;padding:.82rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:.93rem;font-family:'Inter',sans-serif;transition:.3s;outline:none}
+input:focus{border-color:var(--p1);background:rgba(124,109,250,0.06);box-shadow:0 0 0 3px rgba(124,109,250,0.1)}
+input::placeholder{color:var(--muted)}
+.strength{height:3px;border-radius:3px;margin-top:.4rem;background:var(--border);transition:.4s;overflow:hidden}
+.strength-bar{height:100%;border-radius:3px;transition:.4s;width:0}
+.strength-text{font-size:.72rem;color:var(--muted);margin-top:.25rem}
+.terms{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:1.25rem;font-size:.83rem;color:var(--muted)}
+.terms input[type=checkbox]{width:16px;height:16px;min-width:16px;margin-top:2px;accent-color:var(--p1)}
+.terms a{color:var(--p1);text-decoration:none}
+.btn{width:100%;padding:.9rem;border-radius:12px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:1rem;font-weight:700;font-family:'Space Grotesk',sans-serif;border:none;cursor:pointer;transition:.3s}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 30px rgba(124,109,250,0.4)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.alert{padding:.8rem 1rem;border-radius:12px;font-size:.875rem;margin-bottom:1rem;display:none}
+.alert.error{background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.2);color:#ff8080}
+.alert.success{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--p2)}
+.link-row{text-align:center;margin-top:1.5rem;font-size:.9rem;color:var(--muted)}
+.link-row a{color:var(--p1);text-decoration:none;font-weight:600}
+.perks{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.5rem}
+.perk{display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--muted)}
+.perk span{font-size:1rem}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<canvas id="c"></canvas>
+
+<div class="page">
+  <a href="/" class="logo">Aura AI</a>
+  <p class="logo-sub">O'zbekiston'ning eng zo'r AI Platformasi</p>
+  <div class="card">
+    <h1>Hisob yarating 🚀</h1>
+    <p>Bir daqiqada ro'yxatdan o'ting va AI imkoniyatlarini boshdan kechiring</p>
+    <div class="perks">
+      <div class="perk"><span>💬</span>Bepul AI chat</div>
+      <div class="perk"><span>🎨</span>Kunlik 3 rasm</div>
+      <div class="perk"><span>📊</span>Hujjat tahlili</div>
+      <div class="perk"><span>🪙</span>Coin ishlash</div>
+    </div>
+    <div class="alert error" id="errorAlert"></div>
+    <div class="alert success" id="successAlert"></div>
+    <form id="regForm">
+      <div class="form-group">
+        <label>To'liq ism</label>
+        <input type="text" id="name" placeholder="Ismingiz va familiyangiz" required autocomplete="name"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="sizning@email.com" required autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label>Parol</label>
+        <input type="password" id="password" placeholder="Kamida 6 ta belgi" required autocomplete="new-password" oninput="checkStrength(this.value)"/>
+        <div class="strength"><div class="strength-bar" id="strengthBar"></div></div>
+        <div class="strength-text" id="strengthText">Parol kuchini ko'rish</div>
+      </div>
+      <div class="form-group">
+        <label>Parolni tasdiqlang</label>
+        <input type="password" id="password2" placeholder="Parolni qayta kiriting" required autocomplete="new-password"/>
+      </div>
+      <div class="terms">
+        <input type="checkbox" id="agree" required/>
+        <label for="agree" style="text-transform:none;letter-spacing:0;font-size:.83rem;color:var(--muted)">Men <a href="#">foydalanish shartlari</a> va <a href="#">maxfiylik siyosati</a>ga roziman</label>
+      </div>
+      <button type="submit" class="btn" id="regBtn">Ro'yxatdan o'tish →</button>
+    </form>
+    <div class="link-row">Hisobingiz bormi? <a href="/login.html">Kirish</a></div>
+    <div class="link-row" style="margin-top:.5rem"><a href="/">← Bosh sahifaga</a></div>
+  </div>
+</div>
+
+<script>
+const canvas=document.getElementById('c');const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const stars=Array.from({length:120},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2,o:Math.random()*.6}));
+(function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);stars.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${s.o})`;ctx.fill();s.o+=.003*(Math.random()>.5?1:-1);s.o=Math.max(.05,Math.min(.8,s.o));});requestAnimationFrame(draw);})();
+
+fetch('/api/auth/me', {credentials: 'include'}).then(r=>r.json()).then(d=>{if(d.logged_in)window.location.href='/ai.html';}).catch(()=>{});
+
+function checkStrength(pw){
+  const bar=document.getElementById('strengthBar');
+  const txt=document.getElementById('strengthText');
+  let score=0;
+  if(pw.length>=6)score++;
+  if(pw.length>=10)score++;
+  if(/[A-Z]/.test(pw))score++;
+  if(/[0-9]/.test(pw))score++;
+  if(/[^A-Za-z0-9]/.test(pw))score++;
+  const colors=['#ff4444','#ff8c00','#ffd700','#00d4ff','#7c6dfa'];
+  const texts=['Juda zaif','Zaif','O\'rtacha','Kuchli','Juda kuchli'];
+  const w=[20,40,60,80,100];
+  bar.style.width=(w[score-1]||0)+'%';
+  bar.style.background=colors[score-1]||'transparent';
+  txt.textContent=texts[score-1]||'Parolni kiriting';
+  txt.style.color=colors[score-1]||'var(--muted)';
+}
+
+document.getElementById('regForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const name=document.getElementById('name').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const pw=document.getElementById('password').value;
+  const pw2=document.getElementById('password2').value;
+  const errorEl=document.getElementById('errorAlert');
+  const successEl=document.getElementById('successAlert');
+  const btn=document.getElementById('regBtn');
+  errorEl.style.display='none';successEl.style.display='none';
+  if(pw!==pw2){errorEl.textContent='Parollar mos kelmadi';errorEl.style.display='block';return;}
+  if(pw.length<6){errorEl.textContent='Parol kamida 6 ta belgidan iborat bo\'lishi kerak';errorEl.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Yuklanmoqda...';
+  try{
+    const res=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password:pw}),credentials:'include'});
+    const data=await res.json();
+    if(!res.ok){errorEl.textContent=data.error||'Xato yuz berdi';errorEl.style.display='block';btn.disabled=false;btn.textContent='Ro\'yxatdan o\'tish →';return;}
+    successEl.textContent='🎉 '+data.message;successEl.style.display='block';
+    setTimeout(()=>window.location.href='/tasks.html',1500);
+  }catch(err){errorEl.textContent='Server bilan ulanishda xato';errorEl.style.display='block';btn.disabled=false;btn.textContent='Ro\'yxatdan o\'tish →';}
+});
+</script>
+</body>
+</html>

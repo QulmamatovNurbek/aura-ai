@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Tariflar — Aura AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#05050f;--bg2:#0a0a1a;--p1:#7c6dfa;--p2:#00d4ff;--p3:#ff6b9d;--gold:#ffd700;--glass:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#6b6b8a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(120px);opacity:.12;pointer-events:none;z-index:0}
+.orb1{width:600px;height:600px;background:var(--p1);top:-200px;left:-200px}
+.orb2{width:500px;height:500px;background:var(--p2);bottom:-200px;right:-200px}
+canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,var(--p1),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.nav-links{display:flex;gap:1.5rem;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.875rem;transition:.3s}
+.nav-links a:hover{color:var(--text)}
+.coins-display{display:flex;align-items:center;gap:.4rem;padding:.4rem .9rem;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-radius:50px;font-size:.8rem;color:var(--gold);font-weight:600}
+
+main{position:relative;z-index:1;padding:7rem 2rem 4rem;max-width:1200px;margin:0 auto}
+
+.page-hero{text-align:center;margin-bottom:4rem}
+.section-tag{display:inline-block;padding:.3rem .8rem;border-radius:50px;background:rgba(124,109,250,0.1);border:1px solid rgba(124,109,250,0.2);color:var(--p1);font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:1rem}
+.page-hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;margin-bottom:1rem;line-height:1.1}
+.page-hero p{color:var(--muted);font-size:1.05rem;max-width:550px;margin:0 auto}
+
+/* How to earn coins */
+.earn-section{margin-bottom:4rem}
+.earn-section h2{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:.5rem;text-align:center}
+.earn-section p{color:var(--muted);text-align:center;margin-bottom:2rem;font-size:.9rem}
+.earn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.earn-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;transition:.3s}
+.earn-card:hover{border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.04)}
+.earn-icon{font-size:1.5rem;min-width:36px}
+.earn-info h4{font-size:.9rem;font-weight:600;margin-bottom:.2rem}
+.earn-info p{font-size:.78rem;color:var(--muted)}
+.earn-coin{font-size:.75rem;color:var(--gold);font-weight:700;margin-top:.25rem}
+
+/* Toggle */
+.toggle-wrap{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:3rem}
+.toggle-label{font-size:.9rem;color:var(--muted)}
+.toggle-label.active{color:var(--text);font-weight:600}
+.toggle{width:52px;height:28px;background:var(--glass);border:1px solid var(--border);border-radius:50px;position:relative;cursor:pointer;transition:.3s}
+.toggle.on{background:linear-gradient(135deg,var(--p1),var(--p2));border-color:transparent}
+.toggle-dot{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:3px;left:4px;transition:.3s;box-shadow:0 2px 6px rgba(0,0,0,0.3)}
+.toggle.on .toggle-dot{left:28px}
+.save-badge{padding:.2rem .6rem;background:rgba(0,212,255,0.15);border-radius:50px;font-size:.7rem;color:var(--p2);font-weight:600}
+
+/* Plans */
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-bottom:4rem}
+.plan-card{background:var(--glass);border:1px solid var(--border);border-radius:24px;padding:2rem;transition:.4s;position:relative;overflow:hidden}
+.plan-card::after{content:'';position:absolute;bottom:-60px;right:-60px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(124,109,250,0.08),transparent);transition:.4s}
+.plan-card:hover{transform:translateY(-6px);border-color:rgba(124,109,250,0.3)}
+.plan-card.featured{border-color:rgba(124,109,250,0.5);background:rgba(124,109,250,0.06)}
+.plan-badge{position:absolute;top:16px;right:16px;padding:.2rem .6rem;border-radius:50px;font-size:.65rem;font-weight:700}
+.plan-badge.hot{background:rgba(255,107,157,0.2);color:var(--p3)}
+.plan-badge.best{background:rgba(124,109,250,0.2);color:var(--p1)}
+.plan-badge.ultra{background:rgba(255,215,0,0.2);color:var(--gold)}
+.plan-icon{font-size:2rem;margin-bottom:1rem}
+.plan-name{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.25rem}
+.plan-desc{color:var(--muted);font-size:.8rem;margin-bottom:1.5rem}
+.plan-price{display:flex;align-items:baseline;gap:.3rem;margin-bottom:.25rem}
+.plan-price-num{font-family:'Space Grotesk',sans-serif;font-size:3rem;font-weight:800;line-height:1;color:var(--gold)}
+.plan-price-coin{font-size:1.5rem;color:var(--gold)}
+.plan-price-period{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem}
+.plan-save{font-size:.75rem;color:var(--p2);margin-bottom:1.5rem}
+.plan-features{list-style:none;margin-bottom:2rem}
+.plan-features li{padding:.45rem 0;font-size:.85rem;color:var(--muted);display:flex;align-items:center;gap:.6rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+.plan-features li:last-child{border-bottom:none}
+.check{color:var(--p2);font-weight:700;min-width:16px}
+.cross{color:rgba(255,255,255,0.2);min-width:16px}
+.plan-btn{width:100%;padding:.85rem;border-radius:14px;font-size:.9rem;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:.3s;border:none;text-decoration:none;display:block;text-align:center}
+.plan-btn.outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.plan-btn.outline:hover{border-color:var(--p1);color:var(--p1)}
+.plan-btn.filled{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 20px rgba(124,109,250,0.3)}
+.plan-btn.filled:hover{box-shadow:0 8px 30px rgba(124,109,250,0.5);transform:translateY(-2px)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#0e0e20;border:1px solid var(--border);border-radius:24px;padding:2rem;max-width:420px;width:90%;animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.modal h3{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:.5rem}
+.modal p{color:var(--muted);font-size:.875rem;margin-bottom:1.5rem}
+.modal-info{background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem}
+.modal-info .cost{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:800;color:var(--gold)}
+.modal-info .balance{font-size:.8rem;color:var(--muted);margin-top:.25rem}
+.modal-btns{display:flex;gap:.75rem}
+.modal-btns button{flex:1;padding:.8rem;border-radius:12px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.3s;border:none;font-family:'Space Grotesk',sans-serif}
+.modal-cancel{background:transparent;border:1px solid var(--border) !important;color:var(--muted)}
+.modal-cancel:hover{color:var(--text)}
+.modal-confirm{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff}
+.modal-confirm:hover{box-shadow:0 6px 20px rgba(124,109,250,0.4)}
+.modal-alert{padding:.7rem 1rem;border-radius:10px;font-size:.85rem;margin-bottom:1rem;display:none}
+.modal-alert.error{background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.2);color:#ff8080}
+.modal-alert.success{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--p2)}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<canvas id="c"></canvas>
+
+<nav>
+  <a href="/" class="logo">Aura AI</a>
+  <div class="nav-links">
+    <a href="/ai.html">AI Chat</a>
+    <a href="/imagine.html">Imagine</a>
+    <a href="/slides.html">Slides</a>
+    <a href="/tasks.html">Vazifalar</a>
+    <a href="/profile.html">Profil 👤</a>
+  </div>
+  <div class="coins-display" id="coinsDisplay">🪙 <span id="coinCount">...</span></div>
+</nav>
+
+<main>
+  <div class="page-hero">
+    <div class="section-tag">TARIFLAR</div>
+    <h1>Coin bilan premium oling 🪙</h1>
+    <p>Pul to'lash shart emas — vazifalar bajaring, coin yig'ing, kerakli tarifni oling!</p>
+  </div>
+
+  <div class="earn-section">
+    <h2>Qanday coin yig'iladi?</h2>
+    <p>Quyidagi vazifalarni bajaring va bepul coin yig'ing</p>
+    <div class="earn-grid">
+      <div class="earn-card"><div class="earn-icon">📅</div><div class="earn-info"><h4>Kunlik kirish</h4><p>Har kuni platformaga kiring</p><div class="earn-coin">+5 coin/kun</div></div></div>
+      <div class="earn-card"><div class="earn-icon">💬</div><div class="earn-info"><h4>Birinchi suhbat</h4><p>AI bilan birinchi suhbat</p><div class="earn-coin">+10 coin</div></div></div>
+      <div class="earn-card"><div class="earn-icon">🔥</div><div class="earn-info"><h4>7 kunlik streak</h4><p>Ketma-ket 7 kun kiring</p><div class="earn-coin">+50 coin</div></div></div>
+      <div class="earn-card"><div class="earn-icon">🎨</div><div class="earn-info"><h4>Birinchi rasm</h4><p>Imagine AI bilan rasm yarating</p><div class="earn-coin">+10 coin</div></div></div>
+      <div class="earn-card"><div class="earn-icon">📁</div><div class="earn-info"><h4>Fayl yuklash</h4><p>AI ga birinchi fayl yuboring</p><div class="earn-coin">+15 coin</div></div></div>
+      <div class="earn-card"><div class="earn-icon">⚡</div><div class="earn-info"><h4>30 kunlik streak</h4><p>Ketma-ket 30 kun kiring</p><div class="earn-coin">+200 coin</div></div></div>
+    </div>
+  </div>
+
+  <div class="toggle-wrap">
+    <span class="toggle-label active" id="lbl-monthly">Oylik</span>
+    <div class="toggle" id="periodToggle" onclick="togglePeriod()"><div class="toggle-dot"></div></div>
+    <span class="toggle-label" id="lbl-yearly">Yillik</span>
+    <span class="save-badge" id="saveBadge" style="display:none">20% tejash</span>
+  </div>
+
+  <div class="plans-grid">
+    <!-- FREE -->
+    <div class="plan-card">
+      <div class="plan-icon">🆓</div>
+      <div class="plan-name">Free</div>
+      <div class="plan-desc">Boshlash uchun ideal</div>
+      <div class="plan-price"><span class="plan-price-coin">🪙</span><span class="plan-price-num">0</span></div>
+      <div class="plan-price-period">Umrbod bepul</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span>Kunlik 3 ta rasm</li>
+        <li><span class="check">✓</span>Kunlik 2 ta slayd</li>
+        <li><span class="check">✓</span>5 ta AI modeli</li>
+        <li><span class="check">✓</span>Fayl tahlili</li>
+        <li><span class="check">✓</span>10 xabarli tarix</li>
+        <li><span class="cross">✗</span>Premium modellar</li>
+      </ul>
+      <a href="/ai.html" class="plan-btn outline">Bepul boshlash</a>
+    </div>
+    <!-- PRO -->
+    <div class="plan-card featured" data-plan="pro">
+      <span class="plan-badge best">⭐ MASHHUR</span>
+      <div class="plan-icon">⚡</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-desc">Faol foydalanuvchilar uchun</div>
+      <div class="plan-price"><span class="plan-price-coin">🪙</span><span class="plan-price-num" id="pro-price">50</span></div>
+      <div class="plan-price-period" id="pro-period">oylik</div>
+      <div class="plan-save" id="pro-save"></div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span>Kunlik 20 ta rasm</li>
+        <li><span class="check">✓</span>Kunlik 15 ta slayd</li>
+        <li><span class="check">✓</span>Barcha AI modellari</li>
+        <li><span class="check">✓</span>50 xabarli tarix</li>
+        <li><span class="check">✓</span>LLaMA 4 Scout</li>
+        <li><span class="check">✓</span>Mixtral 8x7B</li>
+      </ul>
+      <button class="plan-btn filled" onclick="subscribe('pro')">🪙 Coin bilan olish</button>
+    </div>
+    <!-- PREMIUM -->
+    <div class="plan-card" data-plan="premium">
+      <span class="plan-badge hot">💎 PREMIUM</span>
+      <div class="plan-icon">💎</div>
+      <div class="plan-name">Premium</div>
+      <div class="plan-desc">Professional foydalanuvchilar</div>
+      <div class="plan-price"><span class="plan-price-coin">🪙</span><span class="plan-price-num" id="premium-price">100</span></div>
+      <div class="plan-price-period" id="premium-period">oylik</div>
+      <div class="plan-save" id="premium-save"></div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span>Kunlik 50 ta rasm</li>
+        <li><span class="check">✓</span>Kunlik 40 ta slayd</li>
+        <li><span class="check">✓</span>Barcha premium modellar</li>
+        <li><span class="check">✓</span>100 xabarli tarix</li>
+        <li><span class="check">✓</span>HD sifatli rasmlar</li>
+        <li><span class="check">✓</span>Ustuvor qo'llab-quvvatlash</li>
+      </ul>
+      <button class="plan-btn filled" onclick="subscribe('premium')">🪙 Coin bilan olish</button>
+    </div>
+    <!-- ULTRA -->
+    <div class="plan-card" data-plan="ultra">
+      <span class="plan-badge ultra">🚀 ULTRA</span>
+      <div class="plan-icon">🚀</div>
+      <div class="plan-name">Ultra</div>
+      <div class="plan-desc">Maksimal imkoniyatlar</div>
+      <div class="plan-price"><span class="plan-price-coin">🪙</span><span class="plan-price-num" id="ultra-price">200</span></div>
+      <div class="plan-price-period" id="ultra-period">oylik</div>
+      <div class="plan-save" id="ultra-save"></div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span>Cheksiz rasmlar</li>
+        <li><span class="check">✓</span>Cheksiz slaydlar</li>
+        <li><span class="check">✓</span>Barcha modellar</li>
+        <li><span class="check">✓</span>Cheksiz tarix</li>
+        <li><span class="check">✓</span>Ultra HD rasmlar</li>
+        <li><span class="check">✓</span>VIP qo'llab-quvvatlash</li>
+      </ul>
+      <button class="plan-btn filled" onclick="subscribe('ultra')" style="background:linear-gradient(135deg,#ffd700,#ff6b9d)">🪙 Coin bilan olish</button>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">Tarifni sotib olish</h3>
+    <p id="modal-desc">Coin yechib olinadi</p>
+    <div class="modal-info">
+      <div class="cost">🪙 <span id="modal-cost">0</span></div>
+      <div class="balance">Sizning coinlaringiz: <strong id="modal-balance">0</strong> 🪙</div>
+    </div>
+    <div class="modal-alert" id="modalAlert"></div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">Bekor qilish</button>
+      <button class="modal-confirm" id="confirmBtn" onclick="confirmSubscribe()">✅ Tasdiqlash</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas=document.getElementById('c');const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const stars=Array.from({length:100},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2,o:Math.random()*.5}));
+(function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);stars.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${s.o})`;ctx.fill();s.o+=.003*(Math.random()>.5?1:-1);s.o=Math.max(.05,Math.min(.7,s.o));});requestAnimationFrame(draw);})();
+
+const PRICES={pro:{monthly:50,yearly:400},premium:{monthly:100,yearly:800},ultra:{monthly:200,yearly:1700}};
+let yearly=false;let userCoins=0;let selectedPlan='';let selectedPeriod='monthly';
+
+fetch('/api/auth/me',{credentials:'include'}).then(r=>r.json()).then(d=>{
+  if(d.logged_in){userCoins=d.user.coins;document.getElementById('coinCount').textContent=d.user.coins;}
+  else{document.getElementById('coinCount').textContent='Kirish';document.getElementById('coinsDisplay').style.cursor='pointer';document.getElementById('coinsDisplay').onclick=()=>window.location.href='/login.html';}
+}).catch(()=>{});
+
+function togglePeriod(){
+  yearly=!yearly;
+  const toggle=document.getElementById('periodToggle');
+  toggle.classList.toggle('on',yearly);
+  document.getElementById('lbl-monthly').classList.toggle('active',!yearly);
+  document.getElementById('lbl-yearly').classList.toggle('active',yearly);
+  document.getElementById('saveBadge').style.display=yearly?'inline':'none';
+  updatePrices();
+}
+
+function updatePrices(){
+  const period=yearly?'yearly':'monthly';
+  const periodText=yearly?'yillik':'oylik';
+  ['pro','premium','ultra'].forEach(p=>{
+    document.getElementById(p+'-price').textContent=PRICES[p][period];
+    document.getElementById(p+'-period').textContent=periodText;
+    if(yearly){
+      const save=Math.round((1-PRICES[p].yearly/(PRICES[p].monthly*12))*100);
+      document.getElementById(p+'-save').textContent=`${save}% tejaysiz!`;
+    } else {
+      document.getElementById(p+'-save').textContent='';
+    }
+  });
+}
+
+function subscribe(plan){
+  fetch('/api/auth/me',{credentials:'include'}).then(r=>r.json()).then(d=>{
+    if(!d.logged_in){window.location.href='/login.html?next=/plans.html';return;}
+    userCoins=d.user.coins;
+    selectedPlan=plan;
+    selectedPeriod=yearly?'yearly':'monthly';
+    const cost=PRICES[plan][selectedPeriod];
+    document.getElementById('modal-title').textContent=`${plan.charAt(0).toUpperCase()+plan.slice(1)} tarifni olish`;
+    document.getElementById('modal-desc').textContent=`${selectedPeriod==='monthly'?'Oylik':'Yillik'} obuna — ${selectedPeriod==='monthly'?30:365} kun`;
+    document.getElementById('modal-cost').textContent=cost;
+    document.getElementById('modal-balance').textContent=d.user.coins;
+    document.getElementById('modalAlert').style.display='none';
+    document.getElementById('modal').classList.add('open');
+  });
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+async function confirmSubscribe(){
+  const btn=document.getElementById('confirmBtn');
+  const alertEl=document.getElementById('modalAlert');
+  btn.disabled=true;btn.textContent='Yuklanmoqda...';
+  try{
+    const res=await fetch('/api/plans/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:selectedPlan,period:selectedPeriod}),credentials:'include'});
+    const data=await res.json();
+    if(!res.ok){alertEl.textContent=data.error;alertEl.className='modal-alert error';alertEl.style.display='block';btn.disabled=false;btn.textContent='✅ Tasdiqlash';return;}
+    alertEl.textContent='🎉 '+data.message;alertEl.className='modal-alert success';alertEl.style.display='block';
+    setTimeout(()=>{closeModal();window.location.href='/ai.html';},1500);
+  }catch(e){alertEl.textContent='Xato yuz berdi';alertEl.className='modal-alert error';alertEl.style.display='block';btn.disabled=false;btn.textContent='✅ Tasdiqlash';}
+}
+</script>
+</body>
+</html>

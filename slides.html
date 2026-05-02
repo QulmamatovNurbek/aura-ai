@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Slides — AI Prezentatsiya Yaratish | Aura AI</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #05050f;
+      --p1: #7c6dfa;
+      --p2: #00d4ff;
+      --p3: #ff6b9d;
+      --glass: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e8e8f0;
+      --muted: #6b6b8a;
+      --gold: #ffd700
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: .12;
+      pointer-events: none;
+      z-index: 0
+    }
+
+    .orb1 {
+      width: 500px;
+      height: 500px;
+      background: var(--p3);
+      top: -100px;
+      left: -100px
+    }
+
+    .orb2 {
+      width: 400px;
+      height: 400px;
+      background: var(--p1);
+      bottom: -150px;
+      right: -100px
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(5, 5, 15, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--p1), var(--p2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .875rem;
+      transition: .3s
+    }
+
+    .nav-links a:hover {
+      color: var(--text)
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      padding: 7rem 2rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 3rem
+    }
+
+    .tag {
+      display: inline-block;
+      padding: .3rem .8rem;
+      border-radius: 50px;
+      background: rgba(255, 107, 157, 0.1);
+      border: 1px solid rgba(255, 107, 157, 0.2);
+      color: var(--p3);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem
+    }
+
+    .page-header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.1
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin: 0 auto
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+      flex: 1
+    }
+
+    .controls {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      height: fit-content
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem
+    }
+
+    .control-group label {
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em
+    }
+
+    .select-box {
+      padding: .8rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: .9rem;
+      outline: none;
+      cursor: pointer
+    }
+
+    .select-box option {
+      background: #0a0a1a
+    }
+
+    textarea {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: .95rem;
+      resize: none;
+      height: 120px;
+      outline: none;
+      line-height: 1.5
+    }
+
+    textarea:focus {
+      border-color: var(--p3);
+      background: rgba(255, 107, 157, 0.05)
+    }
+
+    .generate-btn {
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--p1), var(--p3));
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: .3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem
+    }
+
+    .generate-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4)
+    }
+
+    .generate-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed
+    }
+
+    .limit-info {
+      font-size: .8rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: -.5rem
+    }
+
+    .preview-area {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 500px;
+      position: relative
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+      margin: auto
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: .5
+    }
+
+    .loading-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin: auto
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 107, 157, 0.2);
+      border-top-color: var(--p3);
+      border-radius: 50%;
+      animation: spin 1s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .slides-wrapper {
+      display: none;
+      flex-direction: column;
+      gap: 2rem;
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 1rem
+    }
+
+    .slides-wrapper::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .slides-wrapper::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px
+    }
+
+    /* SLIDE THEMES */
+    .slide-box {
+      border-radius: 18px;
+      aspect-ratio: 16/9;
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,.6);
+      overflow: hidden;
+    }
+    .slide-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: inherit;
+      z-index: 0;
+    }
+    .slide-box > * { position: relative; z-index: 1; }
+
+    /* Title slide */
+    .slide-box.title-slide {
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(135deg, #7c6dfa 0%, #00d4ff 60%, #ff6b9d 100%);
+    }
+    .slide-box.title-slide::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.06);
+      bottom: -80px; right: -80px;
+    }
+    .slide-box.title-slide h2 {
+      font-size: clamp(1.8rem,4vw,3rem);
+      font-family: 'Space Grotesk', sans-serif;
+      color: #fff;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+      text-shadow: 0 2px 20px rgba(0,0,0,.3);
+    }
+    .slide-box.title-slide p {
+      font-size: clamp(1rem,2.5vw,1.5rem);
+      color: rgba(255,255,255,.88);
+    }
+
+    /* Content slides — alternating themes */
+    .slide-box.content-slide {
+      justify-content: flex-start;
+      background: linear-gradient(135deg, #0d0d22 0%, #1a1040 100%);
+      border: 1px solid rgba(124,109,250,.25);
+    }
+    .slide-box.content-slide:nth-child(3n) {
+      background: linear-gradient(135deg, #05131f 0%, #0a2540 100%);
+      border-color: rgba(0,212,255,.25);
+    }
+    .slide-box.content-slide:nth-child(3n+2) {
+      background: linear-gradient(135deg, #1a0d1a 0%, #2a1040 100%);
+      border-color: rgba(255,107,157,.25);
+    }
+    .slide-box.content-slide h2 {
+      font-size: clamp(1.4rem,3vw,2.2rem);
+      font-family: 'Space Grotesk', sans-serif;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      padding-bottom: .6rem;
+      border-bottom: 2px solid;
+      border-image: linear-gradient(90deg,var(--p1),var(--p2)) 1;
+      display: block;
+    }
+    .slide-box.content-slide ul { list-style: none; }
+    .slide-box.content-slide li {
+      font-size: clamp(.9rem,2vw,1.3rem);
+      color: rgba(232,232,240,.9);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+      position: relative;
+      padding-left: 1.8rem;
+    }
+    .slide-box.content-slide li::before {
+      content: '▸';
+      color: var(--p2);
+      font-size: 1rem;
+      position: absolute;
+      left: 0;
+      top: 3px;
+    }
+    .slide-num {
+      position: absolute;
+      bottom: 1.2rem;
+      right: 1.8rem;
+      font-size: .85rem;
+      color: rgba(255,255,255,.3);
+      font-weight: 600;
+    }
+
+    .actions {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      display: none;
+      gap: .5rem
+    }
+
+    .action-btn {
+      padding: .5rem 1rem;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: .2s;
+      display: flex;
+      align-items: center;
+      gap: .4rem
+    }
+
+    .action-btn:hover {
+      background: var(--p3);
+      border-color: var(--p3)
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      padding: 1rem 1.5rem;
+      background: #0e0e20;
+      border: 1px solid rgba(255, 80, 80, 0.3);
+      border-radius: 14px;
+      color: #ff8080;
+      font-size: .9rem;
+      z-index: 300;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: .4s
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1
+    }
+
+    @media(max-width:900px) {
+      .workspace {
+        grid-template-columns: 1fr
+      }
+
+      .preview-area {
+        min-height: 350px
+      }
+
+      .slide-box.title-slide h2 {
+        font-size: 2rem
+      }
+
+      .slide-box.content-slide h2 {
+        font-size: 1.5rem
+      }
+
+      .slide-box.content-slide li {
+        font-size: 1rem
+      }
+    }
+
+    @media(max-width:600px) {
+      .nav-links {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <canvas id="c"></canvas>
+
+  <nav>
+    <a href="/" class="logo">Aura AI</a>
+    <div class="nav-links">
+      <a href="/ai.html">AI Chat</a>
+      <a href="/imagine.html">Imagine</a>
+      <a href="/plans.html">Tariflar</a>
+      <a href="/tasks.html">Vazifalar</a>
+      <a href="/profile.html">Profil 👤</a>
+    </div>
+    <a href="/login.html" class="logo"
+      style="font-size:.9rem;font-weight:600;background:none;-webkit-text-fill-color:var(--text)"
+      id="navUser">Kirish</a>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <div class="tag">SLIDES AI</div>
+      <h1>Avtomatik Prezentatsiya</h1>
+      <p>Birgina matn yoki mavzuni yozing, sun'iy intellekt sizga to'liq slaydlar to'plamini yaratib beradi.</p>
+    </div>
+
+    <div class="workspace">
+      <div class="controls">
+        <div class="control-group">
+          <label>Slaydlar soni</label>
+          <select class="select-box" id="count">
+            <option value="5">5 ta slayd</option>
+            <option value="8">8 ta slayd</option>
+            <option value="10">10 ta slayd</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Til</label>
+          <select class="select-box" id="lang">
+            <option value="uz">O'zbek tili</option>
+            <option value="en">Ingliz tili</option>
+            <option value="ru">Rus tili</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Mavzu yoki matn</label>
+          <textarea id="prompt" placeholder="Masalan: Sun'iy intellektning ta'limdagi o'rni va kelajagi..."></textarea>
+        </div>
+        <button class="generate-btn" id="generateBtn" onclick="generate()">📊 Prezentatsiya yaratish</button>
+        <div class="limit-info" id="limitInfo">Bugungi limit: Hisobingizni tekshiring...</div>
+      </div>
+
+      <div class="preview-area">
+        <div class="actions" id="actions">
+          <button class="action-btn" onclick="downloadHTML()">💾 Saqlash (HTML)</button>
+        </div>
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">📊</div>
+          <h3>Prezentatsiya bu yerda chiqadi</h3>
+          <p style="font-size:.85rem;margin-top:.5rem">Mavzuni yozing va AI sizga slaydlar tuzib beradi</p>
+        </div>
+        <div class="loading-state" id="loadingState">
+          <div class="spinner"></div>
+          <div>AI ma'lumotlarni yig'moqda va slaydlarni dizayn qilmoqda... <span id="loadingTime">0</span>s</div>
+        </div>
+        <div class="slides-wrapper" id="slidesWrapper"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const canvas = document.getElementById('c'); const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const stars = Array.from({ length: 100 }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 1.2, o: Math.random() * .5 }));
+    (function draw() { ctx.clearRect(0, 0, canvas.width, canvas.height); stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,255,255,${s.o})`; ctx.fill(); s.o += .003 * (Math.random() > .5 ? 1 : -1); s.o = Math.max(.05, Math.min(.7, s.o)); }); requestAnimationFrame(draw); })();
+
+    let userPlan = 'free';
+    let slidesLeft = 2;
+
+    fetch('/api/auth/me', { credentials: 'include' }).then(r => r.json()).then(d => {
+      if (d.logged_in) {
+        document.getElementById('navUser').textContent = d.user.name;
+        document.getElementById('navUser').href = '/tasks.html';
+        userPlan = d.user.plan;
+        if (userPlan === 'free') slidesLeft = 2;
+        else if (userPlan === 'pro') slidesLeft = 15;
+        else if (userPlan === 'premium') slidesLeft = 40;
+        else slidesLeft = 'Cheksiz';
+        document.getElementById('limitInfo').textContent = `Bugungi limit: ${slidesLeft} ta slayd (${userPlan} tarif)`;
+      } else {
+        document.getElementById('limitInfo').textContent = `Limit: 0. Iltimos, hisobingizga kiring.`;
+        document.getElementById('generateBtn').onclick = () => window.location.href = '/login.html';
+      }
+    }).catch(() => { });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    let timer;
+    let generatedHTML = '';
+
+    async function generate() {
+      const prompt = document.getElementById('prompt').value.trim();
+      if (!prompt) { showToast('Iltimos, mavzuni yozing!'); return; }
+      if (slidesLeft !== 'Cheksiz' && slidesLeft <= 0) { showToast('Bugungi limit tugadi! Tarifingizni yangilang.'); return; }
+
+      const count = document.getElementById('count').value;
+      const lang = document.getElementById('lang').value;
+
+      const btn = document.getElementById('generateBtn');
+      const empty = document.getElementById('emptyState');
+      const loading = document.getElementById('loadingState');
+      const wrapper = document.getElementById('slidesWrapper');
+      const actions = document.getElementById('actions');
+      const timerEl = document.getElementById('loadingTime');
+
+      btn.disabled = true;
+      empty.style.display = 'none';
+      wrapper.style.display = 'none';
+      actions.style.display = 'none';
+      loading.style.display = 'flex';
+
+      let sec = 0;
+      timer = setInterval(() => { timerEl.textContent = ++sec; }, 1000);
+
+      try {
+        const res = await fetch('/api/slides', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: prompt, count: count, lang: lang }),
+          credentials: 'include'
+        });
+        const data = await res.json();
+        clearInterval(timer);
+        loading.style.display = 'none';
+
+        if (data.error) {
+          showToast(data.error);
+          empty.style.display = 'block';
+          btn.disabled = false;
+          return;
+        }
+
+        let slidesData = data.slides;
+
+        wrapper.innerHTML = '';
+        let htmlContent = '';
+
+        slidesData.forEach((slide, idx) => {
+          const sNum = `<div class="slide-num">${idx + 1} / ${slidesData.length}</div>`;
+          if (slide.type === 'title') {
+            const cnt = `<div class="slide-box title-slide"><h2>${slide.title}</h2><p>${slide.subtitle}</p>${sNum}</div>`;
+            wrapper.innerHTML += cnt; htmlContent += cnt;
+          } else {
+            const pts = (slide.points || []).map(p => `<li>${p}</li>`).join('');
+            const cnt = `<div class="slide-box content-slide"><h2>${slide.title}</h2><ul>${pts}</ul>${sNum}</div>`;
+            wrapper.innerHTML += cnt; htmlContent += cnt;
+          }
+        });
+
+        wrapper.style.display = 'flex';
+        actions.style.display = 'flex';
+        btn.disabled = false;
+
+        // Save state for download
+        generatedHTML = `
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Prezentatsiya</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#05050f;font-family:sans-serif;display:flex;flex-direction:column;gap:2rem;padding:2rem;align-items:center}
+.slide-box{background:linear-gradient(135deg,#0a0a1a,#1a1a2e);width:960px;height:540px;border-radius:24px;border:1px solid #7c6dfa;padding:4rem;display:flex;flex-direction:column;justify-content:center;position:relative;box-shadow:0 10px 40px rgba(124,109,250,0.2);box-sizing:border-box}
+.slide-box.title-slide{align-items:center;text-align:center;background:linear-gradient(135deg,#7c6dfa,#00d4ff)}
+.slide-box.title-slide h2{font-size:3.5rem;font-family:'Space Grotesk',sans-serif;color:#fff;margin-bottom:1rem;line-height:1.2}
+.slide-box.title-slide p{font-size:1.8rem;color:rgba(255,255,255,0.9)}
+.slide-box.content-slide{justify-content:flex-start}
+.slide-box.content-slide h2{font-size:2.5rem;font-family:'Space Grotesk',sans-serif;color:#00d4ff;margin-bottom:2rem;border-bottom:3px solid #ff6b9d;padding-bottom:.5rem;display:inline-block}
+.slide-box.content-slide ul{list-style:none;margin-left:1rem;padding:0}
+.slide-box.content-slide li{font-size:1.5rem;color:#e8e8f0;margin-bottom:1.5rem;line-height:1.5;position:relative;padding-left:2.5rem}
+.slide-box.content-slide li::before{content:'•';color:#ff6b9d;font-weight:bold;font-size:2.5rem;position:absolute;left:0;top:-8px}
+.slide-num{position:absolute;bottom:2rem;right:3rem;font-size:1.2rem;color:rgba(255,255,255,0.5);font-weight:600}
+</style></head><body>${htmlContent}</body></html>`;
+
+        if (data.left !== undefined) {
+          slidesLeft = data.left === 9999 ? 'Cheksiz' : data.left;
+          document.getElementById('limitInfo').textContent = `Bugungi limit: ${slidesLeft} ta slayd (${userPlan} tarif)`;
+        }
+
+      } catch (err) {
+        clearInterval(timer);
+        loading.style.display = 'none';
+        empty.style.display = 'block';
+        showToast('Tarmoq xatosi.');
+        btn.disabled = false;
+      }
+    }
+
+    function downloadHTML() {
+      if (!generatedHTML) return;
+      const blob = new Blob([generatedHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'aura-prezentatsiya.html';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+
+</html>

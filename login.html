@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kirish — Aura AI</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #05050f;
+      --p1: #7c6dfa;
+      --p2: #00d4ff;
+      --p3: #ff6b9d;
+      --glass: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e8e8f0;
+      --muted: #6b6b8a
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: .2;
+      pointer-events: none
+    }
+
+    .orb1 {
+      width: 500px;
+      height: 500px;
+      background: var(--p1);
+      top: -200px;
+      left: -200px
+    }
+
+    .orb2 {
+      width: 400px;
+      height: 400px;
+      background: var(--p2);
+      bottom: -150px;
+      right: -150px
+    }
+
+    .orb3 {
+      width: 300px;
+      height: 300px;
+      background: var(--p3);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%)
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+      padding: 2rem 1rem
+    }
+
+    .logo {
+      display: block;
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--p1), var(--p2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      margin-bottom: .5rem
+    }
+
+    .logo-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: .85rem;
+      margin-bottom: 2rem
+    }
+
+    .card {
+      background: rgba(10, 10, 26, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      backdrop-filter: blur(20px)
+    }
+
+    .card h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin-bottom: .5rem
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-bottom: 2rem
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem
+    }
+
+    label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: .5rem;
+      text-transform: uppercase;
+      letter-spacing: .04em
+    }
+
+    input {
+      width: 100%;
+      padding: .85rem 1.1rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: .95rem;
+      font-family: 'Inter', sans-serif;
+      transition: .3s;
+      outline: none
+    }
+
+    input:focus {
+      border-color: var(--p1);
+      background: rgba(124, 109, 250, 0.06);
+      box-shadow: 0 0 0 3px rgba(124, 109, 250, 0.1)
+    }
+
+    input::placeholder {
+      color: var(--muted)
+    }
+
+    .btn {
+      width: 100%;
+      padding: .9rem;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--p1), var(--p2));
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+      border: none;
+      cursor: pointer;
+      transition: .3s;
+      margin-top: .5rem;
+      position: relative;
+      overflow: hidden
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(124, 109, 250, 0.4)
+    }
+
+    .btn:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+      opacity: 0;
+      transition: .3s
+    }
+
+    .btn:hover::after {
+      opacity: 1
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      color: var(--muted);
+      font-size: .8rem
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border)
+    }
+
+    .link-row {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: .9rem;
+      color: var(--muted)
+    }
+
+    .link-row a {
+      color: var(--p1);
+      text-decoration: none;
+      font-weight: 600
+    }
+
+    .link-row a:hover {
+      text-decoration: underline
+    }
+
+    .alert {
+      padding: .85rem 1rem;
+      border-radius: 12px;
+      font-size: .875rem;
+      margin-bottom: 1rem;
+      display: none
+    }
+
+    .alert.error {
+      background: rgba(255, 80, 80, 0.1);
+      border: 1px solid rgba(255, 80, 80, 0.2);
+      color: #ff8080
+    }
+
+    .alert.success {
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      color: var(--p2)
+    }
+
+    .coins-earned {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      justify-content: center;
+      padding: .6rem 1rem;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 50px;
+      font-size: .85rem;
+      color: #ffd700;
+      margin-top: .75rem;
+      display: none
+    }
+  </style>
+</head>
+
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <canvas id="c"></canvas>
+
+  <div class="page">
+    <a href="/" class="logo">Aura AI</a>
+    <p class="logo-sub">O'zbekiston'ning eng zo'r AI Platformasi</p>
+    <div class="card">
+      <h1>Xush kelibsiz 👋</h1>
+      <p>Hisobingizga kiring va AI imkoniyatlarini oching</p>
+      <div class="alert error" id="errorAlert"></div>
+      <div class="alert success" id="successAlert"></div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="sizning@email.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label>Parol</label>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn" id="loginBtn">Kirish →</button>
+        <div class="coins-earned" id="coinsEarned">🪙 +5 coin — Kunlik kirish bonusi!</div>
+      </form>
+      <div class="divider">yoki</div>
+      <div class="link-row">Hisobingiz yo'qmi? <a href="/register.html">Ro'yxatdan o'ting</a></div>
+      <div class="link-row" style="margin-top:.5rem"><a href="/">← Bosh sahifaga</a></div>
+    </div>
+  </div>
+
+  <script>
+    // Stars canvas
+    const canvas = document.getElementById('c'); const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const stars = Array.from({ length: 120 }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 1.2, o: Math.random() * .6 }));
+    (function draw() { ctx.clearRect(0, 0, canvas.width, canvas.height); stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,255,255,${s.o})`; ctx.fill(); s.o += .003 * (Math.random() > .5 ? 1 : -1); s.o = Math.max(.05, Math.min(.8, s.o)); }); requestAnimationFrame(draw); })();
+
+    // Auth check
+    fetch('/api/auth/me', {credentials: 'include'}).then(r => r.json()).then(d => { if (d.logged_in) window.location.href = '/ai.html'; }).catch(() => { });
+
+    // Form
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      const errorEl = document.getElementById('errorAlert');
+      const successEl = document.getElementById('successAlert');
+      const coinsEl = document.getElementById('coinsEarned');
+      errorEl.style.display = 'none'; successEl.style.display = 'none'; coinsEl.style.display = 'none';
+      btn.disabled = true; btn.textContent = 'Yuklanmoqda...';
+      try {
+        const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: document.getElementById('email').value, password: document.getElementById('password').value }), credentials: 'include' });
+        const data = await res.json();
+        if (!res.ok) { errorEl.textContent = data.error || 'Xato yuz berdi'; errorEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Kirish →'; return; }
+        successEl.textContent = '✅ ' + data.message; successEl.style.display = 'block';
+        if (data.earned_coins > 0) { coinsEl.style.display = 'flex'; }
+        setTimeout(() => {
+          const next = new URLSearchParams(window.location.search).get('next') || '/ai.html';
+          window.location.href = next;
+        }, 1200);
+      } catch (err) { errorEl.textContent = 'Server bilan ulanishda xato'; errorEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Kirish →'; }
+    });
+  </script>
+</body>
+
+</html>

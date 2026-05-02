@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>NovaMind AI — Aloqa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css">
+  
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-trail" id="cursorTrail"></div>
+  <canvas id="particles" class="particles-canvas"></canvas>
+  <div class="aurora">
+    <div class="aurora-1"></div>
+    <div class="aurora-2"></div>
+    <div class="aurora-3"></div>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-hex">
+        <svg viewBox="0 0 40 40" width="36" height="36">
+          <polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="20,8 31,14.5 31,25.5 20,32 9,25.5 9,14.5" fill="currentColor" opacity="0.15"/>
+          <text x="20" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="currentColor">N</text>
+        </svg>
+      </div>
+      <span>Nova<span class="logo-accent">Mind</span></span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="nav-link "><span>Home</span></a></li>
+      <li><a href="ai.html" class="nav-link nav-ai "><span>✦ AI Chat</span></a></li>
+      <li><a href="imagine.html" class="nav-link "><span>🎨 Imagine</span></a></li>
+      <li><a href="slides.html" class="nav-link "><span>🗂️ Slides</span></a></li>
+      <li><a href="plans.html" class="nav-link "><span>💎 Planlar</span></a></li>
+      <li><a href="about.html" class="nav-link "><span>About</span></a></li>
+      <li><a href="contact.html" class="nav-link active"><span>Contact</span></a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" title="Tema almashtirish">
+        <span class="theme-icon">🌙</span>
+      </button>
+
+      
+      <a href="login.html" class="nav-login-btn">Kirish</a>
+      <a href="register.html" class="nav-register-btn">Ro'yxat ✦</a>
+      
+
+      <button class="burger" id="burger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    
+
+<section class="page-hero">
+  <div class="page-eyebrow">Contact</div>
+  <h1>Biz bilan <span class="glow-text">bog'laning</span></h1>
+  <p>Taklif, savol yoki hamkorlik uchun murojaat qiling</p>
+</section>
+
+<section class="contact-sec">
+  <div class="contact-grid">
+    <div class="contact-left">
+      <h3>Murojaat yo'llari</h3>
+      <div class="cinfo-list">
+        <a href="https://t.me/tolibovmuhammad" target="_blank" class="cinfo-item">
+          <div class="ci-ico">✈</div>
+          <div><b>Telegram</b><span>@tolibovmuhammad</span></div>
+        </a>
+        <a href="mailto:muhamtolibov@gmail.com" class="cinfo-item">
+          <div class="ci-ico">✉</div>
+          <div><b>Email</b><span>muhamtolibov@gmail.com</span></div>
+        </a>
+        <div class="cinfo-item">
+          <div class="ci-ico">📍</div>
+          <div><b>Joylashuv</b><span>Toshkent, O'zbekiston</span></div>
+        </div>
+        <div class="cinfo-item">
+          <div class="ci-ico">⏰</div>
+          <div><b>Ish vaqti</b><span>Du–Ju: 09:00–18:00</span></div>
+        </div>
+      </div>
+      <div class="contact-tip">
+        ⚡ Telegram orqali eng tez javob olasiz!
+      </div>
+    </div>
+
+    <div class="contact-right">
+      <h3>Xabar yuborish</h3>
+
+      <div id="successMsg" style="display:none" class="form-success">
+        <div class="success-circle">✓</div>
+        <h4 id="successText"></h4>
+        <button onclick="resetForm()" class="btn-outline-sm">Yana yuborish</button>
+      </div>
+
+      <div id="contactForm">
+        <div class="fgroup">
+          <label>Ismingiz *</label>
+          <input type="text" id="fName" placeholder="Ismingizni kiriting">
+        </div>
+        <div class="fgroup">
+          <label>Email *</label>
+          <input type="email" id="fEmail" placeholder="email@example.com">
+        </div>
+        <div class="fgroup">
+          <label>Mavzu</label>
+          <select id="fSubject">
+            <option value="">Mavzu tanlang</option>
+            <option>Umumiy savol</option>
+            <option>Xatolik haqida</option>
+            <option>Yangi funksiya taklifi</option>
+            <option>Hamkorlik</option>
+            <option>Boshqa</option>
+          </select>
+        </div>
+        <div class="fgroup">
+          <label>Xabar *</label>
+          <textarea id="fMsg" rows="4" placeholder="Xabaringizni yozing..."></textarea>
+        </div>
+        <button class="btn-glow full" onclick="sendForm()">
+          <span class="btn-glow-inner">Xabar yuborish ✦</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="logo-hex small">
+            <svg viewBox="0 0 40 40" width="28" height="28">
+              <polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="none" stroke="currentColor" stroke-width="2"/>
+              <text x="20" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="currentColor">N</text>
+            </svg>
+          </div>
+          <span>Nova<span class="logo-accent">Mind</span> AI</span>
+        </div>
+        <p>O'zbekiston uchun eng aqlli AI yordamchi</p>
+      </div>
+      <div class="footer-links-col">
+        <h4>Sahifalar</h4>
+        <a href="index.html">Home</a><a href="ai.html">AI Chat</a>
+        <a href="imagine.html">🎨 Imagine</a><a href="slides.html">🗂️ Slides</a>
+        <a href="plans.html">💎 Planlar</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Yaratuvchi</h4>
+        <a href="creator.html">Tolibov Muhammad</a>
+        <a href="https://t.me/tolibovmuhammad" target="_blank">Telegram</a>
+        <a href="https://github.com/tolibovmuhammad" target="_blank">GitHub</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Hisob</h4>
+        
+        <a href="login.html">Kirish</a>
+        <a href="register.html">Ro'yxatdan o'tish</a>
+        
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 NovaMind AI · Yaratuvchi: <a href="creator.html">Tolibov Muhammad</a> · Powered by Groq ⚡</p>
+      <div class="footer-status"><span class="pulse-dot"></span> Barcha tizimlar ishlayapti</div>
+    </div>
+  </footer>
+
+  <script src="static/js/main.js"></script>
+  <script>
+  function toggleUserMenu(){
+    const d = document.getElementById('navUserDropdown');
+    d.classList.toggle('open');
+  }
+  document.addEventListener('click', function(e){
+    const wrap = document.getElementById('navUserWrap');
+    if(wrap && !wrap.contains(e.target)){
+      const d = document.getElementById('navUserDropdown');
+      if(d) d.classList.remove('open');
+    }
+  });
+  </script>
+  
+<script>
+async function sendForm(){
+  const n=document.getElementById('fName').value.trim();
+  const e=document.getElementById('fEmail').value.trim();
+  const m=document.getElementById('fMsg').value.trim();
+  if(!n||!e||!m){alert('Iltimos barcha * maydonlarni to\'ldiring');return;}
+  const btn=document.querySelector('.btn-glow.full');
+  btn.querySelector('.btn-glow-inner').textContent='Yuborilmoqda...';
+  const r=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,message:m})});
+  const d=await r.json();
+  document.getElementById('contactForm').style.display='none';
+  document.getElementById('successText').textContent=d.message;
+  document.getElementById('successMsg').style.display='flex';
+}
+function resetForm(){
+  document.getElementById('contactForm').style.display='block';
+  document.getElementById('successMsg').style.display='none';
+  ['fName','fEmail','fMsg'].forEach(id=>document.getElementById(id).value='');
+}
+</script>
+
+</body>
+</html>

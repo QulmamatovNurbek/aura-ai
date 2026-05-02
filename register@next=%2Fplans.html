@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>NovaMind AI — Ro'yxatdan o'tish</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css">
+  
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-trail" id="cursorTrail"></div>
+  <canvas id="particles" class="particles-canvas"></canvas>
+  <div class="aurora">
+    <div class="aurora-1"></div>
+    <div class="aurora-2"></div>
+    <div class="aurora-3"></div>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-hex">
+        <svg viewBox="0 0 40 40" width="36" height="36">
+          <polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="20,8 31,14.5 31,25.5 20,32 9,25.5 9,14.5" fill="currentColor" opacity="0.15"/>
+          <text x="20" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="currentColor">N</text>
+        </svg>
+      </div>
+      <span>Nova<span class="logo-accent">Mind</span></span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="nav-link "><span>Home</span></a></li>
+      <li><a href="ai.html" class="nav-link nav-ai "><span>✦ AI Chat</span></a></li>
+      <li><a href="imagine.html" class="nav-link "><span>🎨 Imagine</span></a></li>
+      <li><a href="slides.html" class="nav-link "><span>🗂️ Slides</span></a></li>
+      <li><a href="plans.html" class="nav-link "><span>💎 Planlar</span></a></li>
+      <li><a href="about.html" class="nav-link "><span>About</span></a></li>
+      <li><a href="contact.html" class="nav-link "><span>Contact</span></a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" title="Tema almashtirish">
+        <span class="theme-icon">🌙</span>
+      </button>
+
+      
+      <a href="login.html" class="nav-login-btn">Kirish</a>
+      <a href="register.html" class="nav-register-btn">Ro'yxat ✦</a>
+      
+
+      <button class="burger" id="burger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    
+<div class="auth-page">
+  <div class="auth-glow"></div>
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="logo-hex">
+        <svg viewBox="0 0 40 40" width="44" height="44">
+          <polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="20,8 31,14.5 31,25.5 20,32 9,25.5 9,14.5" fill="currentColor" opacity="0.15"/>
+          <text x="20" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">N</text>
+        </svg>
+      </div>
+      <div>
+        <h2>Nova<span class="logo-accent">Mind</span> AI</h2>
+        <p class="auth-sub">Yangi hisob yaratish</p>
+      </div>
+    </div>
+
+    <div id="authError" class="auth-error" style="display:none"></div>
+    <div id="authSuccess" class="auth-success" style="display:none"></div>
+
+    <div class="fgroup">
+      <label>👤 Username</label>
+      <input type="text" id="username" placeholder="foydalanuvchi_nomi" autocomplete="username"/>
+      <span class="fhint">Kamida 3 ta belgi</span>
+    </div>
+    <div class="fgroup">
+      <label>📧 Email</label>
+      <input type="email" id="email" placeholder="email@example.com" autocomplete="email"/>
+    </div>
+    <div class="fgroup">
+      <label>🔒 Parol</label>
+      <div class="pass-wrap">
+        <input type="password" id="password" placeholder="Kamida 6 ta belgi" autocomplete="new-password"/>
+        <button class="pass-eye" onclick="togglePass()" type="button">👁</button>
+      </div>
+    </div>
+
+    <div class="plan-select-row">
+      <span class="fhint">Ro'yxatdan o'tgandan so'ng plan tanlashingiz mumkin</span>
+    </div>
+
+    <button class="btn-auth" id="regBtn" onclick="doRegister()">
+      <span class="btn-glow-inner">Ro'yxatdan o'tish ✦</span>
+    </button>
+
+    <div class="auth-divider"><span>yoki</span></div>
+
+    <div class="auth-footer">
+      Hisobingiz bormi? <a href="login.html">Kirish →</a>
+    </div>
+    <div class="auth-footer" style="margin-top:8px">
+      <a href="index.html" style="color:var(--txt3);font-size:13px">← Bosh sahifaga qaytish</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function togglePass(){
+  const p = document.getElementById('password');
+  p.type = p.type === 'password' ? 'text' : 'password';
+}
+
+async function doRegister(){
+  const btn  = document.getElementById('regBtn');
+  const errEl = document.getElementById('authError');
+  const sucEl = document.getElementById('authSuccess');
+  errEl.style.display = 'none';
+  sucEl.style.display = 'none';
+  const username = document.getElementById('username').value.trim();
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  if(!username || !email || !password){ showErr('Barcha maydonlarni to\'ldiring'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="btn-glow-inner">Yuklanmoqda...</span>';
+  try {
+    const res  = await fetch('/api/register', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({username, email, password})
+    });
+    const data = await res.json();
+    if(data.success){
+      sucEl.textContent = '✅ Muvaffaqiyatli ro\'yxatdan o\'tdingiz! Yo\'naltirilmoqda...';
+      sucEl.style.display = 'block';
+      const nxt = new URLSearchParams(location.search).get('next') || '/plans.html';
+      setTimeout(() => location.href = nxt, 1000);
+    } else {
+      showErr(data.error || 'Xatolik yuz berdi');
+      btn.disabled = false;
+      btn.innerHTML = '<span class="btn-glow-inner">Ro\'yxatdan o\'tish ✦</span>';
+    }
+  } catch(e){
+    showErr('Tarmoq xatoligi');
+    btn.disabled = false;
+    btn.innerHTML = '<span class="btn-glow-inner">Ro\'yxatdan o\'tish ✦</span>';
+  }
+}
+function showErr(msg){
+  const el = document.getElementById('authError');
+  el.textContent = '⚠️ ' + msg;
+  el.style.display = 'block';
+}
+</script>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="logo-hex small">
+            <svg viewBox="0 0 40 40" width="28" height="28">
+              <polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="none" stroke="currentColor" stroke-width="2"/>
+              <text x="20" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="currentColor">N</text>
+            </svg>
+          </div>
+          <span>Nova<span class="logo-accent">Mind</span> AI</span>
+        </div>
+        <p>O'zbekiston uchun eng aqlli AI yordamchi</p>
+      </div>
+      <div class="footer-links-col">
+        <h4>Sahifalar</h4>
+        <a href="index.html">Home</a><a href="ai.html">AI Chat</a>
+        <a href="imagine.html">🎨 Imagine</a><a href="slides.html">🗂️ Slides</a>
+        <a href="plans.html">💎 Planlar</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Yaratuvchi</h4>
+        <a href="creator.html">Tolibov Muhammad</a>
+        <a href="https://t.me/tolibovmuhammad" target="_blank">Telegram</a>
+        <a href="https://github.com/tolibovmuhammad" target="_blank">GitHub</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Hisob</h4>
+        
+        <a href="login.html">Kirish</a>
+        <a href="register.html">Ro'yxatdan o'tish</a>
+        
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 NovaMind AI · Yaratuvchi: <a href="creator.html">Tolibov Muhammad</a> · Powered by Groq ⚡</p>
+      <div class="footer-status"><span class="pulse-dot"></span> Barcha tizimlar ishlayapti</div>
+    </div>
+  </footer>
+
+  <script src="static/js/main.js"></script>
+  <script>
+  function toggleUserMenu(){
+    const d = document.getElementById('navUserDropdown');
+    d.classList.toggle('open');
+  }
+  document.addEventListener('click', function(e){
+    const wrap = document.getElementById('navUserWrap');
+    if(wrap && !wrap.contains(e.target)){
+      const d = document.getElementById('navUserDropdown');
+      if(d) d.classList.remove('open');
+    }
+  });
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,10 @@
+flask
+flask-cors
+groq
+python-dotenv
+PyMuPDF
+python-docx
+openpyxl
+python-pptx
+Pillow
+requests

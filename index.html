@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Aura AI — O'zbekiston'ning #1 Sun'iy Intellekt Platformasi</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#05050f;--bg2:#0a0a1a;--p1:#7c6dfa;--p2:#00d4ff;--p3:#ff6b9d;--gold:#ffd700;--glass:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e8e8f0;--muted:#6b6b8a;}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+
+/* CANVAS */
+#starCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,15,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,var(--p1),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;font-weight:500;transition:.3s}
+.nav-links a:hover{color:var(--text)}
+.nav-btns{display:flex;gap:.75rem;align-items:center}
+.btn-ghost{padding:.5rem 1.25rem;border:1px solid var(--border);border-radius:50px;color:var(--text);text-decoration:none;font-size:.85rem;transition:.3s;background:transparent}
+.btn-ghost:hover{border-color:var(--p1);color:var(--p1)}
+.btn-primary{padding:.5rem 1.5rem;border-radius:50px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;text-decoration:none;font-size:.85rem;font-weight:600;transition:.3s;border:none;cursor:pointer}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(124,109,250,0.4)}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 4rem}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;border:1px solid rgba(124,109,250,0.3);border-radius:50px;background:rgba(124,109,250,0.1);font-size:.8rem;color:var(--p1);margin-bottom:2rem;animation:fadeUp .8s ease}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--p1);animation:pulse 2s infinite}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:800;line-height:1.1;margin-bottom:1.5rem;animation:fadeUp .8s .1s both}
+.hero h1 .grad{background:linear-gradient(135deg,var(--p1),var(--p2),var(--p3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.15rem;color:var(--muted);max-width:600px;margin:0 auto 2.5rem;line-height:1.7;animation:fadeUp .8s .2s both}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s .3s both}
+.btn-lg{padding:.9rem 2.5rem;border-radius:50px;font-size:1rem;font-weight:600;text-decoration:none;transition:.3s;display:inline-flex;align-items:center;gap:.5rem}
+.btn-lg.primary{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 8px 30px rgba(124,109,250,0.3)}
+.btn-lg.primary:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(124,109,250,0.5)}
+.btn-lg.ghost{border:1px solid var(--border);color:var(--text);background:var(--glass)}
+.btn-lg.ghost:hover{border-color:var(--p2);color:var(--p2)}
+
+/* STATS */
+.stats{position:relative;z-index:1;padding:4rem 2rem;display:flex;justify-content:center;gap:4rem;flex-wrap:wrap;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--glass)}
+.stat{text-align:center}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--p1),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{color:var(--muted);font-size:.85rem;margin-top:.25rem}
+
+/* FEATURES */
+.section{position:relative;z-index:1;padding:6rem 2rem;max-width:1200px;margin:0 auto}
+.section-tag{display:inline-block;padding:.3rem .8rem;border-radius:50px;background:rgba(124,109,250,0.1);border:1px solid rgba(124,109,250,0.2);color:var(--p1);font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:1rem}
+.section h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:800;margin-bottom:1rem}
+.section-sub{color:var(--muted);font-size:1rem;max-width:500px;line-height:1.7;margin-bottom:3rem}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.card{background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:2rem;transition:.3s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,109,250,0.05),transparent);opacity:0;transition:.3s}
+.card:hover{border-color:rgba(124,109,250,0.3);transform:translateY(-4px)}
+.card:hover::before{opacity:1}
+.card-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.25rem}
+.card-icon.purple{background:rgba(124,109,250,0.15)}
+.card-icon.cyan{background:rgba(0,212,255,0.15)}
+.card-icon.pink{background:rgba(255,107,157,0.15)}
+.card-icon.gold{background:rgba(255,215,0,0.15)}
+.card h3{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:.6rem}
+.card p{color:var(--muted);font-size:.9rem;line-height:1.6}
+
+/* FOOTER */
+footer{position:relative;z-index:1;padding:3rem 2rem;border-top:1px solid var(--border);text-align:center}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-size:1.75rem;font-weight:800;background:linear-gradient(135deg,var(--p1),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:1rem}
+.footer-links{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:.9rem;transition:.3s}
+.footer-links a:hover{color:var(--text)}
+.footer-copy{color:var(--muted);font-size:.8rem}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* GLOW ORBS */
+.orb{position:fixed;border-radius:50%;filter:blur(100px);opacity:.15;pointer-events:none;z-index:0}
+.orb1{width:600px;height:600px;background:var(--p1);top:-200px;left:-200px}
+.orb2{width:500px;height:500px;background:var(--p2);bottom:-200px;right:-200px}
+.orb3{width:400px;height:400px;background:var(--p3);top:50%;right:10%}
+
+@media(max-width:768px){.nav-links{display:none}}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<canvas id="starCanvas"></canvas>
+
+<nav>
+  <a href="/" class="logo">Aura AI</a>
+  <div class="nav-links">
+    <a href="/ai.html">AI Chat</a>
+    <a href="/imagine.html">Imagine</a>
+    <a href="/slides.html">Slides</a>
+    <a href="/plans.html">Tariflar</a>
+    <a href="/tasks.html">Vazifalar</a>
+    <a href="/profile.html">Profil 👤</a>
+  </div>
+  <div class="nav-btns">
+    <a href="/login.html" class="btn-ghost" id="nav-login">Kirish</a>
+    <a href="/register.html" class="btn-primary" id="nav-register">Boshlash →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="hero-badge"><span></span>O'zbekiston'ning #1 AI Platformasi</div>
+    <h1>Kelajak <span class="grad">sun'iy intellekti</span><br/>bugun sizning qo'lingizda</h1>
+    <p>Aura AI — chat, rasm yaratish, hujjat tahlili va prezentatsiyalarni bir joyda mujassam etadi. Haqiqiy obuna tizimi va cheksiz imkoniyatlar!</p>
+    <div class="hero-btns">
+      <a href="/register.html" class="btn-lg primary">🚀 Bepul Boshlash</a>
+      <a href="/ai.html" class="btn-lg ghost">💬 AI bilan gaplash</a>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">5+</div><div class="stat-label">AI Modeli</div></div>
+  <div class="stat"><div class="stat-num">3</div><div class="stat-label">Til qo'llab-quvvatlash</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Avtomatik tizim</div></div>
+</div>
+
+<div class="section">
+  <div class="section-tag">IMKONIYATLAR</div>
+  <h2>Hamma narsani bir joyda</h2>
+  <p class="section-sub">Eng kuchli AI vositalari to'plami. Bepul boshlang, kerakli narsa bo'lsa coin orqali kengaytiring.</p>
+  <div class="grid-3">
+    <div class="card"><div class="card-icon purple">💬</div><h3>Aura AI Chat</h3><p>Tarix saqlanadi, super-tez streaming va eng aqlli LLaMA 3.3 modellari orqali xatosiz matn.</p></div>
+    <div class="card"><div class="card-icon cyan">🎨</div><h3>Imagine AI</h3><p>Matndan mukammal HD rasmlar yaratish. Promptingiz o'zi English tiliga kuchaytirib o'giriladi.</p></div>
+    <div class="card"><div class="card-icon pink">📊</div><h3>Slides AI</h3><p>Prezentatsiya yaratish xatolarsiz! Bir necha soniyada JSON bazali to'liq strukturali slaydlar.</p></div>
+    <div class="card"><div class="card-icon gold">🪙</div><h3>Coin Tizimi</h3><p>Coin yig'ib real obuna sotib oling. Vaqt cheklovlari va obunaga qarab AI kuchi oshadi!</p></div>
+  </div>
+</div>
+
+<footer>
+  <a href="/" class="footer-logo">Aura AI</a>
+  <div class="footer-links">
+    <a href="/ai.html">AI Chat</a>
+    <a href="/imagine.html">Imagine</a>
+    <a href="/slides.html">Slides</a>
+    <a href="/plans.html">Tariflar</a>
+  </div>
+  <p class="footer-copy">© 2025 Aura AI — Nurbek Qulmamatov tomonidan yaratilgan ❤️</p>
+</footer>
+
+<script>
+// Stars
+const canvas=document.getElementById('starCanvas');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const stars=Array.from({length:150},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5,o:Math.random()}));
+function drawStars(){ctx.clearRect(0,0,canvas.width,canvas.height);stars.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${s.o})`;ctx.fill();s.o+=.005*(Math.random()>.5?1:-1);if(s.o<0)s.o=0;if(s.o>0.8)s.o=0.8;});requestAnimationFrame(drawStars);}
+drawStars();
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+
+// Auth state
+fetch('/api/auth/me').then(r=>r.json()).then(d=>{
+  if(d.logged_in){
+    document.getElementById('nav-login').textContent='🪙 '+d.user.coins;
+    document.getElementById('nav-login').href='/tasks.html';
+    document.getElementById('nav-register').textContent='AI ga kirish →';
+    document.getElementById('nav-register').href='/ai.html';
+  }
+}).catch(()=>{});
+
+// Scroll animations
+const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:.1});
+document.querySelectorAll('.card,.stat').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(30px)';el.style.transition='opacity .6s ease, transform .6s ease';observer.observe(el);});
+</script>
+</body>
+</html>
