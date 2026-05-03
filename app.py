@@ -407,16 +407,60 @@ def api_chat_stream():
     plan = user["plan"] if user else "free"
     
     data = request.get_json(force=True) or {}
-    user_msg = (data.get("message") or "").strip()
-    model_req = data.get("model") or "llama-3.1-8b-instant"
+    user_msg   = (data.get("message") or "").strip()
+    model_req  = data.get("model") or "llama-3.1-8b-instant"
+    file_data  = data.get("file_data")   # base64 string
+    file_name  = data.get("file_name", "fayl")
+    file_type  = data.get("file_type")   # 'image' or 'document'
+    file_mime  = data.get("file_mime", "")
     
-    if not user_msg: return jsonify({"error": "Xabar bo'sh"}), 400
+    if not user_msg and not file_data:
+        return jsonify({"error": "Xabar bo'sh"}), 400
+
+    # ── Handle file/image ──────────────────────
+    vision_content = None   # for Groq vision API
+    extra_context  = ""    # prepended text for docs
+
+    if file_data and file_type == "image":
+        # Use vision model
+        vision_content = [
+            {"type": "text",      "text": user_msg or "Bu rasmni tahlil qil va tushuntirib ber."},
+            {"type": "image_url", "image_url": {"url": f"data:{file_mime};base64,{file_data}"}}
+        ]
+        model_req = "meta-llama/llama-4-scout-17b-16e-instruct"  # vision model
+
+    elif file_data and file_type == "document":
+        raw = base64.b64decode(file_data)
+        extracted = ""
+        try:
+            if "pdf" in file_mime:
+                import fitz
+                doc = fitz.open(stream=io.BytesIO(raw), filetype="pdf")
+                extracted = "\n".join(page.get_text() for page in doc)
+            elif "wordprocessingml" in file_mime or "docx" in file_mime:
+                from docx import Document
+                doc = Document(io.BytesIO(raw))
+                extracted = "\n".join(p.text for p in doc.paragraphs)
+            else:  # plain text
+                extracted = raw.decode("utf-8", errors="replace")
+        except Exception as ex:
+            extracted = f"(Faylni o'qishda xato: {ex})"
+        max_chars = 8000
+        if len(extracted) > max_chars:
+            extracted = extracted[:max_chars] + "\n...(davomi qisqartirildi)"
+        extra_context = f"\n\n[Fayl: {file_name}]\n{extracted}\n"
+
+    # ── Build final message ─────────────────────
+    final_msg = user_msg
+    if extra_context:
+        final_msg = (user_msg or "Ushbu faylni tahlil qil va xulosasini ber.") + extra_context
+
     model = get_allowed_model(plan, model_req)
     
     # Save user msg
     if user:
         with get_db() as conn:
-            conn.execute("INSERT INTO chat_messages(user_id,role,content,created_at) VALUES(?,?,?,?)", (user_id, "user", user_msg, int(time.time())))
+            conn.execute("INSERT INTO chat_messages(user_id,role,content,created_at) VALUES(?,?,?,?)", (user_id, "user", user_msg or f"[{file_name}]", int(time.time())))
         check_task(user_id, "first_chat")
             
     # Load history
@@ -425,10 +469,14 @@ def api_chat_stream():
     if user:
         with get_db() as conn:
             hist = conn.execute("SELECT role, content FROM chat_messages WHERE user_id=? ORDER BY created_at ASC", (user_id,)).fetchall()
-            for h in hist[-history_limit:]:
+            for h in hist[-(history_limit):-1]:  # all but last (we'll add below)
                 messages.append({"role": h["role"], "content": h["content"]})
+
+    # Add current message (vision or text)
+    if vision_content:
+        messages.append({"role": "user", "content": vision_content})
     else:
-        messages.append({"role": "user", "content": user_msg})
+        messages.append({"role": "user", "content": final_msg})
 
     if not groq_client:
         def err():
