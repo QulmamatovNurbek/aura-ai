@@ -190,16 +190,16 @@ MODELS = {
 }
 
 PLAN_LEVELS = {
-    "free":    {"models": ["llama-3.1-8b-instant"], "images": 3, "slides": 2, "history": 10},
-    "pro":     {"models": ["llama-3.1-8b-instant"], "images": 20, "slides": 10, "history": 50},
+    "free":    {"models": ["llama-3.1-8b-instant"], "images": 0, "slides": 0, "history": 10},
+    "pro":     {"models": ["llama-3.1-8b-instant"], "images": 20, "slides": 0, "history": 50},
     "premium": {"models": ["llama-3.1-8b-instant", "llama-3.3-70b-versatile"], "images": 50, "slides": 20, "history": 150},
     "ultra":   {"models": ["llama-3.1-8b-instant", "llama-3.3-70b-versatile"], "images": 9999, "slides": 9999, "history": 9999},
 }
 
 PLAN_PRICES = {
-    "pro":     {"monthly": 50,  "yearly": 400},
-    "premium": {"monthly": 100, "yearly": 800},
-    "ultra":   {"monthly": 200, "yearly": 1700},
+    "pro":     {"monthly": 100,  "yearly": 800},
+    "premium": {"monthly": 150, "yearly": 1250},
+    "ultra":   {"monthly": 250, "yearly": 2000},
 }
 
 SYSTEM_BASE = """Isming: Aura AI. 
