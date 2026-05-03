@@ -203,7 +203,7 @@ PLAN_PRICES = {
 }
 
 SYSTEM_BASE = """Isming: Aura AI. 
-Yaratuvchi: Nurbek Qulmamatov.
+Yaratuvchi: Nurbek Qulmamatov, u 6 yillik tajribaga ega professional Full-Stack & Ai dasturchi.
 
 QAT'IY QOIDALAR (BU BUYRUQLARNI BUZMA):
 
