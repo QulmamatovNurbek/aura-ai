@@ -757,6 +757,33 @@
       document.getElementById('fileIcon').textContent = '';
     }
 
+    // ── CLIPBOARD PASTE (Ctrl+V screenshort) ──
+    document.getElementById('msgInput').addEventListener('paste', function(e) {
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for (const item of items) {
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (!file) return;
+          const preview  = document.getElementById('filePreview');
+          const fpName   = document.getElementById('fpName');
+          const prevImg  = document.getElementById('previewImg');
+          const fileIcon = document.getElementById('fileIcon');
+          fpName.textContent = 'Screenshot (' + file.type.split('/')[1].toUpperCase() + ')';
+          preview.style.display = 'flex';
+          prevImg.style.display = 'block';
+          fileIcon.textContent = '';
+          const reader = new FileReader();
+          reader.onload = ev => {
+            attachedFile = { type: 'image', data: ev.target.result.split(',')[1], name: 'screenshot.' + file.type.split('/')[1], mimeType: file.type };
+            prevImg.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+          return;
+        }
+      }
+    });
+
     async function clearHistoryReq() {
       if (confirm("Tarixni butunlay tozalaysizmi?")) {
         await fetch('/api/chat/clear', { method: 'POST', credentials: 'include' });
