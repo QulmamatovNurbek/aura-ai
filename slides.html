@@ -582,11 +582,18 @@
         document.getElementById('navUser').textContent = d.user.name;
         document.getElementById('navUser').href = '/tasks.html';
         userPlan = d.user.plan;
-        if (userPlan === 'free') slidesLeft = 2;
-        else if (userPlan === 'pro') slidesLeft = 15;
-        else if (userPlan === 'premium') slidesLeft = 40;
-        else slidesLeft = 'Cheksiz';
-        document.getElementById('limitInfo').textContent = `Bugungi limit: ${slidesLeft} ta slayd (${userPlan} tarif)`;
+        
+        if (userPlan === 'free' || userPlan === 'pro') {
+            document.getElementById('limitInfo').innerHTML = '<span style="color:var(--p3)">PREMIUM tarif kerak!</span>';
+            document.getElementById('generateBtn').onclick = () => {
+                showToast('Slides AI dan foydalanish uchun PREMIUM yoki undan yuqori tarifga obuna bo\'ling!');
+                setTimeout(() => window.location.href = '/plans.html', 2000);
+            };
+        } else {
+            const limits = { premium: 20, ultra: 'Cheksiz' };
+            slidesLeft = limits[userPlan] || 0;
+            document.getElementById('limitInfo').textContent = `Bugungi limit: ${slidesLeft} ta slayd (${userPlan} tarif)`;
+        }
       } else {
         document.getElementById('limitInfo').textContent = `Limit: 0. Iltimos, hisobingizga kiring.`;
         document.getElementById('generateBtn').onclick = () => window.location.href = '/login.html';
