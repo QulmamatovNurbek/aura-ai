@@ -141,6 +141,37 @@
       margin: 0 auto
     }
 
+    /* UPGRADE OVERLAY */
+    .upgrade-overlay {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      position: relative;
+      z-index: 10;
+      padding: 2rem 1rem;
+    }
+    .upgrade-card {
+      background: #0e0e20;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      animation: pop .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes pop { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    .upgrade-card .icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .upgrade-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; margin-bottom: 1rem; color: #fff; }
+    .upgrade-card p { color: var(--muted); font-size: .95rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .upgrade-card .plan-info { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 1rem; color: var(--p2); font-size: .9rem; line-height: 1.7; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05); }
+    .upgrade-btn { display: inline-block; width: 100%; padding: 1rem; border-radius: 12px; background: linear-gradient(135deg, var(--p1), var(--p2)); color: #fff; font-size: 1.05rem; font-weight: 600; text-decoration: none; transition: 0.3s; border: none; margin-bottom: .8rem; }
+    .upgrade-btn:hover { box-shadow: 0 8px 25px rgba(124, 109, 250, 0.4); transform: translateY(-2px); }
+    .back-btn { display: inline-block; width: 100%; padding: 1rem; border-radius: 12px; background: transparent; color: var(--muted); font-size: .95rem; font-weight: 500; text-decoration: none; transition: 0.3s; border: 1px solid var(--border); }
+    .back-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+
     .page-head {
       text-align: center;
       margin-bottom: 2.5rem
@@ -742,7 +773,24 @@
     <a href="/login.html" class="nav-coin" id="navUser">🔑 Kirish</a>
   </nav>
 
-  <main>
+  <div class="upgrade-overlay" id="upgradeOverlay">
+    <div class="upgrade-card">
+      <div class="icon">🎨</div>
+      <h2>PRO yoki undan yuqori tarif kerak</h2>
+      <p>Rasm yaratish (Imagine) funksiyasidan foydalanish uchun <strong>PRO</strong>, <strong>PREMIUM</strong> yoki <strong>ULTRA</strong> tarifiga o'ting.</p>
+      
+      <div class="plan-info">
+        PRO: 100 Coin/oy — kunlik 20 ta rasm<br>
+        PREMIUM: 150 Coin/oy — kunlik 50 ta rasm<br>
+        ULTRA: 250 Coin/oy — cheksiz rasmlar
+      </div>
+
+      <a href="/plans.html" class="upgrade-btn">💎 Planni ko'rish va tanlash</a>
+      <a href="/" class="back-btn">Bosh sahifaga qaytish</a>
+    </div>
+  </div>
+
+  <main id="mainApp">
     <div class="page-head">
       <div class="tag">✨ Imagine AI</div>
       <h1>Matndan <span>professional rasm</span> yarating</h1>
@@ -851,11 +899,8 @@
         document.getElementById('navUser').href = '/tasks.html';
         userPlan = d.user.plan;
         if (userPlan === 'free') {
-            document.getElementById('limitBadge').innerHTML = '<span style="color:var(--p3)">PRO tarif kerak!</span>';
-            document.getElementById('genBtn').onclick = () => {
-                showToast('Bu bo\'limdan foydalanish uchun PRO yoki undan yuqori tarifga obuna bo\'ling!', 'error');
-                setTimeout(() => window.location.href = '/plans.html', 2000);
-            };
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('upgradeOverlay').style.display = 'flex';
         } else {
             const limits = { free: 0, pro: 20, premium: 50, ultra: '∞' };
             imagesLeft = limits[userPlan] || 0;
