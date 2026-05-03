@@ -185,8 +185,9 @@ except ImportError:
     groq_client = None
 
 MODELS = {
-    "llama-3.1-8b-instant":    {"name": "⚡ LLaMA 3.1 8B (Tez & Kuchli)", "speed": "ultra", "tier": "free"},
-    "llama-3.3-70b-versatile": {"name": "🦙 LLaMA 3.3 70B (Eng Aqlli)",   "speed": "fast",  "tier": "premium"},
+    "llama-3.1-8b-instant":                     {"name": "⚡ LLaMA 3.1 8B (Tez & Kuchli)",   "speed": "ultra", "tier": "free"},
+    "llama-3.3-70b-versatile":                  {"name": "🦙 LLaMA 3.3 70B (Eng Aqlli)",     "speed": "fast",  "tier": "premium"},
+    "meta-llama/llama-4-scout-17b-16e-instruct":{"name": "👁️ LLaMA 4 Scout (Vision)",       "speed": "fast",  "tier": "free"},
 }
 
 PLAN_LEVELS = {
@@ -455,7 +456,11 @@ def api_chat_stream():
     if extra_context:
         final_msg = (user_msg or "Ushbu faylni tahlil qil va xulosasini ber.") + extra_context
 
-    model = get_allowed_model(plan, model_req)
+    # Vision model bypasses plan check (it's free tier)
+    if vision_content:
+        model = "meta-llama/llama-4-scout-17b-16e-instruct"
+    else:
+        model = get_allowed_model(plan, model_req)
     
     # Save user msg
     if user:
