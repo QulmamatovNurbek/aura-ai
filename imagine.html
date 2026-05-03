@@ -850,9 +850,17 @@
         document.getElementById('navUser').innerHTML = '🪙 ' + d.user.coins;
         document.getElementById('navUser').href = '/tasks.html';
         userPlan = d.user.plan;
-        const limits = { free: 3, pro: 20, premium: 50, ultra: '∞' };
-        imagesLeft = limits[userPlan] || 3;
-        updateLimitBadge();
+        if (userPlan === 'free') {
+            document.getElementById('limitBadge').innerHTML = '<span style="color:var(--p3)">PRO tarif kerak!</span>';
+            document.getElementById('genBtn').onclick = () => {
+                showToast('Bu bo\'limdan foydalanish uchun PRO yoki undan yuqori tarifga obuna bo\'ling!', 'error');
+                setTimeout(() => window.location.href = '/plans.html', 2000);
+            };
+        } else {
+            const limits = { free: 0, pro: 20, premium: 50, ultra: '∞' };
+            imagesLeft = limits[userPlan] || 0;
+            updateLimitBadge();
+        }
       } else {
         document.getElementById('limitBadge').innerHTML = '<span style="color:var(--p3)">Kirish kerak!</span>';
         document.getElementById('genBtn').onclick = () => window.location.href = '/login.html';
